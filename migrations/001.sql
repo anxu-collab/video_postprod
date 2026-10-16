@@ -1,0 +1,16 @@
+CREATE TABLE IF NOT EXISTS jobs(job_id TEXT, revision INTEGER, input_hash TEXT NOT NULL, parent_revision INTEGER, state TEXT NOT NULL, profile TEXT, created_utc TEXT NOT NULL, payload TEXT NOT NULL, error TEXT, PRIMARY KEY(job_id,revision));
+CREATE TABLE IF NOT EXISTS nodes(node_id TEXT PRIMARY KEY,job_id TEXT,revision INTEGER,type TEXT,node_key TEXT,state TEXT,artifact_manifest_hash TEXT,result TEXT,FOREIGN KEY(job_id,revision) REFERENCES jobs);
+CREATE INDEX IF NOT EXISTS node_key_index ON nodes(node_key,state);
+CREATE TABLE IF NOT EXISTS dependencies(node_id TEXT,parent_id TEXT,input_role TEXT,PRIMARY KEY(node_id,parent_id),FOREIGN KEY(node_id) REFERENCES nodes,FOREIGN KEY(parent_id) REFERENCES nodes);
+CREATE TABLE IF NOT EXISTS attempts(attempt_id TEXT PRIMARY KEY,node_id TEXT,lease_token INTEGER,state TEXT,start_utc TEXT,end_utc TEXT,error_code TEXT,FOREIGN KEY(node_id) REFERENCES nodes);
+CREATE TABLE IF NOT EXISTS artifacts(sha256 TEXT PRIMARY KEY,kind TEXT,relative_path TEXT,size INTEGER,probe_hash TEXT,published INTEGER);
+CREATE TABLE IF NOT EXISTS node_artifacts(node_id TEXT,sha256 TEXT,role TEXT,PRIMARY KEY(node_id,sha256,role),FOREIGN KEY(node_id) REFERENCES nodes,FOREIGN KEY(sha256) REFERENCES artifacts);
+CREATE TABLE IF NOT EXISTS reviews(evidence_id TEXT PRIMARY KEY,artifact_hash TEXT,scope TEXT,decision TEXT,operator TEXT,validator_version TEXT,record_hash TEXT,record TEXT);
+CREATE TABLE IF NOT EXISTS leases(resource_id TEXT PRIMARY KEY,owner TEXT,token INTEGER NOT NULL,expires_utc TEXT,heartbeat TEXT);
+CREATE TABLE IF NOT EXISTS paid_intents(intent_id TEXT PRIMARY KEY,request_key TEXT UNIQUE NOT NULL,provider TEXT,account_ref TEXT,job_id TEXT,state TEXT,remote_id TEXT,reserve_micros INTEGER CHECK(reserve_micros>0),settled_micros INTEGER,receipt_hash TEXT,result TEXT,reason TEXT,date_local TEXT,created_utc TEXT);
+CREATE TABLE IF NOT EXISTS paid_attempts(intent_id TEXT,seq INTEGER,started_utc TEXT,request_id TEXT,acceptance_status TEXT,reserved INTEGER,settled INTEGER,receipt_hash TEXT,PRIMARY KEY(intent_id,seq),FOREIGN KEY(intent_id) REFERENCES paid_intents);
+CREATE TABLE IF NOT EXISTS budgets(scope_id TEXT,currency TEXT,limit_micros INTEGER,reserved INTEGER,settled INTEGER,date_local TEXT,PRIMARY KEY(scope_id,currency));
+CREATE TABLE IF NOT EXISTS errors(error_id TEXT PRIMARY KEY,node_id TEXT,attempt_id TEXT,code TEXT,retryable INTEGER,details_ref TEXT);
+CREATE TABLE IF NOT EXISTS events(event_id INTEGER PRIMARY KEY AUTOINCREMENT,job_id TEXT,revision INTEGER,type TEXT,utc TEXT,payload TEXT);
+CREATE TABLE IF NOT EXISTS idempotency(endpoint TEXT,key TEXT,body_hash TEXT,response_ref TEXT,PRIMARY KEY(endpoint,key));
+PRAGMA user_version=1;

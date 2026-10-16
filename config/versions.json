@@ -1,0 +1,19 @@
+{
+  "schema_version": "postprod-versions/v1",
+  "source_commits": {
+    "mpt": "4204d0f39afa8ada6f3edc31604141f959fe254e",
+    "narrato": "9fa69e022d4add41205ee385207561df8796b3f1"
+  },
+  "interpreters": {
+    "scheduler": "C:/Users/anxu/AppData/Roaming/uv/python/cpython-3.12.11-windows-x86_64-none/python.exe",
+    "mpt": "C:/Users/anxu/AppData/Roaming/uv/python/cpython-3.11.14-windows-x86_64-none/python.exe",
+    "narrato": "C:/Users/anxu/AppData/Roaming/uv/python/cpython-3.12.11-windows-x86_64-none/python.exe"
+  },
+  "python_versions": {
+    "scheduler": "3.12.11",
+    "mpt": "3.11.14",
+    "narrato": "3.12.11"
+  },
+  "patch_selection": "Managed CPython versions supported by installed uv; fixed absolute interpreter; system default unchanged",
+  "installed_at": "2026-10-10T16:38:10.700795+00:00"
+}

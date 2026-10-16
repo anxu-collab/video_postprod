@@ -1,0 +1,53 @@
+<!doctype html><html lang="zh"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>自动后期</title><link rel="stylesheet" href="/ui/style.css">
+<main><h1>自动后期</h1><p>导入素材与配音，粘贴整稿，自动完成画面分析、字幕校对、选镜排时、配乐和导出。数字人口播保留原声。</p><div id="status">正在连接本地服务…</div>
+<section id="scriptDraftSection"><h2>独立口播稿</h2><p>先准备产品资料，选择本次 Skill，再写稿和审稿。保存不收费；生成才使用已勾选的额度。</p>
+<label>账号<select id="dsAccount"><option value="">请选择账号</option></select></label>
+<label>产品名称<input id="dsName"></label><label>产品编号<input id="dsProductId" placeholder="例如 tianyiqing"></label>
+<div id="dsDocuments"></div><button id="dsAddDocument" class="secondary">增加一份资料</button>
+<label>本次口播 Skill<select id="dsSkill"><option value="">请选择口播 Skill</option></select></label>
+<p id="dsRecipeNote" hidden>1.4.0：按库组装，中间开放改写，审稿后的可修问题自动交回口播Agent，最多两次返修。首尾和必要效果词保留。1.2/1.3为历史版本。当前方案为老周账号、天益清（产品编号 tianyiqing）、R07开头。保存不收费，生成及返修使用同一额度。</p>
+<label>本期主题<textarea id="dsBrief" rows="2"></textarea></label>
+<details><summary>表达候选范围（可选）</summary><p>不勾选时使用默认候选。勾选可缩小本轮判断范围；已批准不代表适合本产品，仍由 Clef 逐项判断。</p><div id="dsCandidates"></div></details>
+<label><input type="checkbox" id="dsPaid">允许本稿生成及审稿使用现有付费额度（每稿、每日均不超过 2 元；共享现有总额度）</label>
+<button id="dsCreate">保存新稿（不收费）</button><button id="dsRefresh" class="secondary">刷新稿件</button><p id="dsMessage" role="status"></p><div id="dsList"></div>
+<div id="dsDetail" hidden><h3 id="dsTitle"></h3><p id="dsStage"></p><div id="dsExpressions"></div><label>口播正文（每行一个结构段；组装版按方案段数）<textarea id="dsText" rows="8"></textarea></label><div id="dsIssues"></div>
+<button id="dsGenerate">生成并审稿（使用额度）</button><button id="dsEdit" class="secondary">保存人工修改为新稿</button><button id="dsRewrite" class="secondary">按原资料创建重写稿</button><button id="dsConfirm">确认这版正文</button><button id="dsHandoff">转到新建视频</button><p>人工修改保存为新稿后只审稿，不自动改写。转后期仅填写账号与口播，素材另选。</p></div></section>
+<section id="newVideo"><h2>新建视频</h2><label>账号<select id="account"></select></label>
+<label>栏目<select id="contentLine"></select></label>
+<label>这条视频的内容<input id="brief" placeholder="例如：火龙果画面介绍" maxlength="500"></label>
+<label>商品关键词（逗号分隔，用于镜头与商品对应）<input id="productTerms" placeholder="例如：火龙果" maxlength="200"></label>
+<label>画面选择方式<select id="selmode"><option value="whole_clip" selected>整条素材选择合并（默认：整条大致相关即可，不逐句裁切）</option><option value="precise">逐句精确选镜（需要动作语义与确认区间）</option><option value="beat">按句节奏快切（素材库审过的素材卡，按口播落点配镜）</option></select></label>
+<label>Clef 候选选镜<select id="clefMode"><option value="off">关闭</option><option value="shadow" selected>影子建议（默认，保留原选镜）</option><option value="active">启用建议用于自由 B-roll</option></select><small>shadow 会记录模型建议但不替换原结果；固定片段、对白和原声门禁继续生效。</small></label>
+<label>商品资料（可选，每行一条可引用的事实；生成整稿与事实核对会使用）<textarea id="productDoc" rows="4" placeholder="每行一条，例如：&#10;产地云南，单果约350克。&#10;白心品种，籽粒黑色。"></textarea></label>
+<label class="upload">添加视频素材<input id="files" type="file" accept="video/mp4,video/quicktime,video/x-matroska" multiple></label><div id="assets"></div>
+<div class="group"><h3>配音方式</h3>
+<label><input type="radio" name="narrmode" value="auto" checked>自动配音（本机 <span id="voiceName">账号</span> 声音）</label>
+<label><input type="radio" name="narrmode" value="uploaded">上传现成配音</label>
+<label><input type="radio" name="narrmode" value="history">使用已确认的历史配音</label>
+<label class="upload" id="narrUploadRow" hidden>选择配音文件（WAV/MP3）<input id="narrfile" type="file" accept=".wav,.mp3"></label>
+<div id="narrHistoryRow" hidden><label>选择历史配音<select id="narrhistory"></select></label><button id="previewHistory" class="secondary" type="button">试听所选历史配音</button></div>
+<audio id="historyAudio" controls hidden></audio>
+</div>
+<div class="group"><h3>整稿</h3>
+<label><input type="radio" name="scriptmode" value="pasted" checked>粘贴整稿</label>
+<label><input type="radio" name="scriptmode" value="generated">由模型按资料生成整稿（需要付费额度）</label>
+<div id="scriptSkillRow" hidden><label>本次口播 Skill（必须明确选择）<select id="scriptSkill"><option value="">请选择口播 Skill</option></select></label><div id="scriptGenerationSummary" class="notice" aria-live="polite">生成整稿前请选择 Skill。</div></div>
+<textarea id="script" rows="6" placeholder="把完整口播稿粘贴在这里；每句话决定一个镜头段落。"></textarea>
+</div>
+<label><input type="checkbox" id="color">允许缺少色彩标记的素材按 BT.709 生成技术预览，保留待审阅状态</label>
+<label><input type="checkbox" id="paid">允许使用本轮已批准的方舟文本/视觉模型（累计不超过 2 元 / 40 次）</label>
+<button id="submit">自动剪辑</button>
+<details><summary>高级：导入完整任务 JSON</summary><textarea id="jobjson" rows="7" placeholder="edit-job/v1 或 edit-job/v2"></textarea><button id="jsonsubmit">加入队列</button></details></section>
+<section><h2>任务与结果</h2><button id="refresh">刷新</button><div id="jobs"></div></section>
+<section id="detail" hidden><h2 id="detailTitle">任务详情</h2>
+<div id="stagePanel"></div>
+<section id="clefAuditPanel" class="clef-audit" hidden aria-live="polite"></section>
+<video id="preview" controls playsinline hidden></video>
+<video id="sourcePreview" controls playsinline hidden></video><p id="clefPreviewStatus"></p>
+<audio id="narrAudio" controls preload="none" hidden></audio>
+<p id="holds"></p><pre id="metrics"></pre>
+<div id="revisionPanel"></div>
+<label>审阅项目<select id="scope"><option value="visual">画面内容</option><option value="color">色彩</option><option value="audio">声音听感</option><option value="subtitles">实际字幕</option><option value="content">产品与事实</option><option value="lipsync">原始嘴型</option><option value="boundaries">对白完整性与切点</option></select></label>
+<label>审阅备注<input id="reviewNotes" placeholder="填写看过、听过的结果与依据"></label>
+<button id="accept">该项通过</button><button id="reject">该项需修改</button><button id="resume">恢复可重试任务</button><button id="cancel">停止后续步骤</button></section>
+<footer>仅在本机运行 · C 模式口型生成尚未启用 · 无需开发 Agent 参与日常任务</footer></main><script src="/ui/script-drafts.js"></script><script src="/ui/app.js"></script></main>

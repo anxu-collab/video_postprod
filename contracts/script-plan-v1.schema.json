@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:laox:auto-postprod:script-plan-v1",
+  "title": "Full narrative script split into stable sentences with visual needs",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "job_id", "revision", "source_mode", "script_text", "script_sha256", "purpose", "product_terms", "sentences", "library_sha256"],
+  "properties": {
+    "schema_version": {"const": "script-plan/v1"},
+    "job_id": {"$ref": "#/$defs/id"},
+    "revision": {"type": "integer", "minimum": 1},
+    "source_mode": {"enum": ["pasted", "generated"]},
+    "script_text": {"type": "string", "minLength": 1, "maxLength": 20000},
+    "script_sha256": {"$ref": "#/$defs/hash"},
+    "purpose": {"type": "string", "minLength": 1, "maxLength": 2000, "description": "Editing purpose (job brief); narrative order comes only from script text, never asset upload order."},
+    "product_terms": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 2, "maxLength": 32},
+      "description": "Operator-supplied product keywords used as a hard constraint: candidates must show one of the terms this sentence mentions (or carry verified identity)."},
+    "sentences": {
+      "type": "array", "minItems": 1, "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["sentence_id", "text", "claim_ids", "visual"],
+        "properties": {
+          "sentence_id": {"$ref": "#/$defs/id"},
+          "text": {"type": "string", "minLength": 1, "maxLength": 2000},
+          "claim_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+          "visual": {
+            "type": "object", "additionalProperties": false, "required": ["required", "preferred", "alternatives_ok"],
+            "properties": {
+              "required": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/use"}},
+              "preferred": {"type": "array", "uniqueItems": true, "minItems": 1, "items": {"$ref": "#/$defs/use"}},
+              "alternatives_ok": {"type": "boolean", "default": true}
+            }
+          },
+          "semantics": {
+            "type": "object", "additionalProperties": false,
+            "required": ["action_kind", "action_object", "state", "uncertainty"],
+            "properties": {
+              "action_kind": {"oneOf": [{"type": "null"}, {"enum": ["open_packaging", "split_fruit", "takeout", "wrapup"]}]},
+              "action_object": {"oneOf": [{"type": "null"}, {"enum": ["packaging", "fruit", "flesh", "product", "tool", "unknown"]}]},
+              "state": {"oneOf": [{"type": "null"}, {"enum": ["in_progress", "completed", "unspecified"]}]},
+              "uncertainty": {"type": "boolean"}
+            },
+            "description": "r3 per-clause action parse of this sentence; uncertainty sentences stop the planner (SENTENCE_SEMANTICS_UNRESOLVED) instead of being guessed."
+          }
+        }
+      }
+    },
+    "library_sha256": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/hash"}]}
+  },
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"},
+    "hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "use": {"enum": ["packaging", "open_box", "detail", "takeout", "wrapup", "other", "open_packaging", "split_fruit"]}
+  }
+}

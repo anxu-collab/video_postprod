@@ -1,0 +1,235 @@
+{
+  "schema_version": "timeline/v1",
+  "timeline_id": "demo-ab",
+  "job_id": "demo-ab",
+  "revision": 1,
+  "timescale": 48000,
+  "canvas": {
+    "width": 768,
+    "height": 1376,
+    "fps": 25,
+    "sar": "1:1"
+  },
+  "duration_ticks": 480000,
+  "resources": [
+    {
+      "ref_id": "a-probe",
+      "path": "F:/codex/laox_account/video_postprod/tests/fixtures/a-probe.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+      "kind": "probe",
+      "probe_ref": null,
+      "provenance_ref": null
+    },
+    {
+      "ref_id": "a-provenance",
+      "path": "F:/codex/laox_account/video_postprod/tests/fixtures/a-provenance.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000002",
+      "kind": "manifest",
+      "probe_ref": null,
+      "provenance_ref": null
+    },
+    {
+      "ref_id": "a-source",
+      "path": "F:/codex/laox_account/video_postprod/tests/fixtures/a-source.mp4",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000003",
+      "kind": "video",
+      "probe_ref": "a-probe",
+      "provenance_ref": "a-provenance"
+    },
+    {
+      "ref_id": "b-probe",
+      "path": "F:/codex/laox_account/video_postprod/tests/fixtures/b-probe.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000004",
+      "kind": "probe",
+      "probe_ref": null,
+      "provenance_ref": null
+    },
+    {
+      "ref_id": "b-provenance",
+      "path": "F:/codex/laox_account/video_postprod/tests/fixtures/b-provenance.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000005",
+      "kind": "manifest",
+      "probe_ref": null,
+      "provenance_ref": null
+    },
+    {
+      "ref_id": "b-source",
+      "path": "F:/codex/laox_account/video_postprod/tests/fixtures/b-source.mp4",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000006",
+      "kind": "video",
+      "probe_ref": "b-probe",
+      "provenance_ref": "b-provenance"
+    },
+    {
+      "ref_id": "a-voice-probe",
+      "path": "F:/codex/laox_account/video_postprod/tests/fixtures/a-voice-probe.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000007",
+      "kind": "probe",
+      "probe_ref": null,
+      "provenance_ref": null
+    },
+    {
+      "ref_id": "a-voice",
+      "path": "F:/codex/laox_account/video_postprod/tests/fixtures/a-voice.wav",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000008",
+      "kind": "audio",
+      "probe_ref": "a-voice-probe",
+      "provenance_ref": null
+    },
+    {
+      "ref_id": "b-boundary",
+      "path": "F:/codex/laox_account/video_postprod/tests/fixtures/b-boundary.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000009",
+      "kind": "evidence",
+      "probe_ref": null,
+      "provenance_ref": null
+    },
+    {
+      "ref_id": "voice-probe",
+      "path": "F:/codex/laox_account/video_postprod/tests/fixtures/voice-probe.json",
+      "sha256": "000000000000000000000000000000000000000000000000000000000000000a",
+      "kind": "probe",
+      "probe_ref": null,
+      "provenance_ref": null
+    },
+    {
+      "ref_id": "voice-stem",
+      "path": "F:/codex/laox_account/video_postprod/tests/fixtures/voice-stem.wav",
+      "sha256": "000000000000000000000000000000000000000000000000000000000000000b",
+      "kind": "audio",
+      "probe_ref": "voice-probe",
+      "provenance_ref": null
+    },
+    {
+      "ref_id": "alignment",
+      "path": "F:/codex/laox_account/video_postprod/tests/fixtures/alignment.json",
+      "sha256": "000000000000000000000000000000000000000000000000000000000000000c",
+      "kind": "evidence",
+      "probe_ref": null,
+      "provenance_ref": null
+    },
+    {
+      "ref_id": "music-probe",
+      "path": "F:/codex/laox_account/video_postprod/tests/fixtures/music-probe.json",
+      "sha256": "000000000000000000000000000000000000000000000000000000000000000d",
+      "kind": "probe",
+      "probe_ref": null,
+      "provenance_ref": null
+    },
+    {
+      "ref_id": "music",
+      "path": "F:/codex/laox_account/video_postprod/tests/fixtures/music.wav",
+      "sha256": "000000000000000000000000000000000000000000000000000000000000000e",
+      "kind": "audio",
+      "probe_ref": "music-probe",
+      "provenance_ref": null
+    }
+  ],
+  "video_clips": [
+    {
+      "clip_id": "a-clip",
+      "mode": "broll",
+      "base_source_ref": "a-source",
+      "video_ref": "a-source",
+      "source_in_tick": 0,
+      "source_out_tick": 240000,
+      "timeline_start_tick": 0,
+      "duration_tick": 240000,
+      "speed": 1,
+      "boundary_evidence_ref": null,
+      "visual_evidence_ref": null,
+      "lip_evidence_ref": null,
+      "lip_result_ref": null
+    },
+    {
+      "clip_id": "b-clip",
+      "mode": "spoken_locked",
+      "base_source_ref": "b-source",
+      "video_ref": "b-source",
+      "source_in_tick": 0,
+      "source_out_tick": 240000,
+      "timeline_start_tick": 240000,
+      "duration_tick": 240000,
+      "speed": 1,
+      "boundary_evidence_ref": "b-boundary",
+      "visual_evidence_ref": null,
+      "lip_evidence_ref": null,
+      "lip_result_ref": null
+    }
+  ],
+  "audio_events": [
+    {
+      "event_id": "a-speech",
+      "role": "narration",
+      "audio_ref": "a-voice",
+      "stream_index": 0,
+      "source_in_tick": 0,
+      "source_out_tick": 240000,
+      "timeline_start_tick": 0,
+      "duration_tick": 240000,
+      "gain_db": 0,
+      "sync_clip_id": null,
+      "claim_ids": [],
+      "alignment_ref": "alignment"
+    },
+    {
+      "event_id": "b-speech",
+      "role": "dialogue",
+      "audio_ref": "b-source",
+      "stream_index": 1,
+      "source_in_tick": 0,
+      "source_out_tick": 240000,
+      "timeline_start_tick": 240000,
+      "duration_tick": 240000,
+      "gain_db": 0,
+      "sync_clip_id": "b-clip",
+      "claim_ids": [],
+      "alignment_ref": "alignment"
+    },
+    {
+      "event_id": "music-event",
+      "role": "bgm",
+      "audio_ref": "music",
+      "stream_index": 0,
+      "source_in_tick": 0,
+      "source_out_tick": 480000,
+      "timeline_start_tick": 0,
+      "duration_tick": 480000,
+      "gain_db": -24,
+      "sync_clip_id": null,
+      "claim_ids": [],
+      "alignment_ref": null
+    }
+  ],
+  "voice_stem_ref": "voice-stem",
+  "subtitles": {
+    "source_audio_ref": "voice-stem",
+    "source_audio_sha256": "000000000000000000000000000000000000000000000000000000000000000b",
+    "alignment_ref": "alignment",
+    "template": {
+      "template_id": "subtitle-bottom",
+      "version": "1.0.0"
+    },
+    "cues": [
+      {
+        "cue_id": "cue-1",
+        "start_tick": 4800,
+        "end_tick": 192000,
+        "text": "合同演示文字，未对齐任何实际音频。",
+        "claim_ids": []
+      },
+      {
+        "cue_id": "cue-2",
+        "start_tick": 244800,
+        "end_tick": 432000,
+        "text": "合同演示文字，未对齐任何实际音频。",
+        "claim_ids": []
+      }
+    ]
+  },
+  "template_events": [],
+  "review": {
+    "status": "pending",
+    "evidence_refs": []
+  }
+}

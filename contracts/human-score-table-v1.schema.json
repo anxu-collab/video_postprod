@@ -1,0 +1,327 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:laox:auto-postprod:human-score-table-v1",
+  "title": "Human scoring table over Clef shot candidates (authority=human_over_clef)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "job_id",
+    "revision",
+    "status",
+    "authority",
+    "bindings",
+    "clef_ref",
+    "sentences",
+    "operator_id"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "human-score-table/v1"
+    },
+    "job_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "status": {
+      "enum": [
+        "pending",
+        "submitted"
+      ]
+    },
+    "authority": {
+      "const": "human_over_clef"
+    },
+    "operator_id": {
+      "type": "string"
+    },
+    "created_utc": {
+      "type": "string"
+    },
+    "submitted_utc": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "clef_audit_sha256",
+        "library_sha256",
+        "snapshot_sha256"
+      ],
+      "properties": {
+        "clef_audit_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "library_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "snapshot_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "clef_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "status"
+      ],
+      "properties": {
+        "mode": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "ok",
+            "unavailable",
+            "off",
+            "error"
+          ]
+        },
+        "fallback_reason": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "rule_version": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    "sentences": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "sentence_id",
+          "script_text",
+          "candidates",
+          "user_rank",
+          "user_score",
+          "selected",
+          "user_selected_id",
+          "note"
+        ],
+        "properties": {
+          "sentence_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "script_text": {
+            "type": "string"
+          },
+          "clip_id": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "clef_ranked_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "clef_preferred_id": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "candidates": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "candidate_id",
+                "library_candidate_id",
+                "source_sha256",
+                "asset_id",
+                "in_tick",
+                "out_tick",
+                "clef_rank",
+                "clef_score",
+                "selection_eligible",
+                "description"
+              ],
+              "properties": {
+                "candidate_id": {
+                  "type": "string"
+                },
+                "library_candidate_id": {
+                  "oneOf": [
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "source_sha256": {
+                  "oneOf": [
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "asset_id": {
+                  "oneOf": [
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "in_tick": {
+                  "oneOf": [
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "type": "integer"
+                    }
+                  ]
+                },
+                "out_tick": {
+                  "oneOf": [
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "type": "integer"
+                    }
+                  ]
+                },
+                "clef_rank": {
+                  "oneOf": [
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "type": "integer",
+                      "minimum": 1
+                    }
+                  ]
+                },
+                "clef_score": {
+                  "oneOf": [
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "type": "number"
+                    }
+                  ]
+                },
+                "selection_eligible": {
+                  "type": "boolean"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "gate_reasons": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "user_rank": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 1
+              }
+            ]
+          },
+          "user_score": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 5
+              }
+            ]
+          },
+          "selected": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "user_selected_id": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

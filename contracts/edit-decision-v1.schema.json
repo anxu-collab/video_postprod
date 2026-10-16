@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:laox:auto-postprod:edit-decision-v1",
+  "title": "Per-shot edit decision compiled to the existing timeline/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "job_id", "revision", "inputs", "clips", "missing", "tail_pause_ticks", "narration"],
+  "properties": {
+    "schema_version": {"const": "edit-decision/v1"},
+    "job_id": {"$ref": "#/$defs/id"},
+    "revision": {"type": "integer", "minimum": 1},
+    "inputs": {
+      "type": "object", "additionalProperties": false,
+      "required": ["script_sha256", "narration_audio_sha256", "library_sha256"],
+      "properties": {
+        "script_sha256": {"$ref": "#/$defs/hash"},
+        "narration_audio_sha256": {"$ref": "#/$defs/hash"},
+        "library_sha256": {"$ref": "#/$defs/hash"}
+      }
+    },
+    "clips": {
+      "type": "array", "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["clip_id", "source", "asset_id", "source_sha256", "source_in_tick", "source_out_tick", "timeline_start_tick", "duration_tick", "sentence_ids", "match_reason", "overlap_exception"],
+        "properties": {
+          "clip_id": {"$ref": "#/$defs/id"},
+          "source": {"enum": ["fixed", "pool"]},
+          "candidate_id": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/id"}]},
+          "asset_id": {"$ref": "#/$defs/id"},
+          "source_sha256": {"$ref": "#/$defs/hash"},
+          "source_in_tick": {"type": "integer", "minimum": 0},
+          "source_out_tick": {"type": "integer", "minimum": 1},
+          "timeline_start_tick": {"type": "integer", "minimum": 0, "multipleOf": 1920},
+          "duration_tick": {"type": "integer", "minimum": 1920, "multipleOf": 1920},
+          "sentence_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+          "match_reason": {"type": "string", "minLength": 1, "maxLength": 2000},
+          "match_evidence": {"type": "object", "maxProperties": 16},
+          "fixed_role": {"oneOf": [{"type": "null"}, {"enum": ["fixed_opening", "fixed_closing", "locked_body"]}]},
+          "overlap_exception": {"oneOf": [{"type": "null"}, {
+            "type": "object", "additionalProperties": false, "required": ["reason"],
+            "properties": {"reason": {"type": "string", "minLength": 1, "maxLength": 2000}, "operator_choice": {"type": "boolean"}}
+          }]}
+        }
+      }
+    },
+    "missing": {
+      "type": "array", "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["sentence_id", "requirement", "reason"],
+        "properties": {
+          "sentence_id": {"$ref": "#/$defs/id"},
+          "requirement": {"type": "array", "minItems": 1, "items": {"type": "string", "maxLength": 64}},
+          "reason": {"type": "string", "minLength": 1, "maxLength": 500},
+          "proposed_windows": {"type": "array", "maxItems": 8, "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["source_asset_id", "source_sha256", "in_tick", "out_tick", "evidence", "ticks", "gaps"],
+            "properties": {
+              "source_asset_id": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/id"}]},
+              "source_sha256": {"$ref": "#/$defs/hash"},
+              "in_tick": {"type": "integer", "minimum": 0},
+              "out_tick": {"type": "integer", "minimum": 0},
+              "evidence": {"enum": ["inferred_run", "attested_tick"]},
+              "ticks": {"type": "array", "minItems": 1, "items": {"type": "integer", "minimum": 0}},
+              "gaps": {"type": "array", "items": {"type": "object", "additionalProperties": false,
+                "required": ["from", "to", "ticks", "verified"],
+                "properties": {"from": {"type": "integer", "minimum": 0}, "to": {"type": "integer", "minimum": 0},
+                               "ticks": {"type": "integer", "minimum": 0}, "verified": {"const": false}}}}
+            },
+            "description": "r3: INFERRED proposals for the operator to review and confirm; never auto-selected windows."
+          }}
+        }
+      }
+    },
+    "tail_pause_ticks": {"type": "integer", "minimum": 0, "multipleOf": 1920},
+    "narration": {
+      "type": "object", "additionalProperties": false, "required": ["audio_sha256", "body_start_tick", "sentences"],
+      "properties": {
+        "audio_sha256": {"$ref": "#/$defs/hash"},
+        "body_start_tick": {"type": "integer", "minimum": 0, "multipleOf": 1920},
+        "sentences": {"type": "array", "items": {
+          "type": "object", "additionalProperties": false,
+          "required": ["sentence_id", "in_tick", "out_tick", "audio_in_tick", "audio_out_tick", "claim_ids"],
+          "properties": {
+            "sentence_id": {"$ref": "#/$defs/id"},
+            "in_tick": {"type": "integer", "minimum": 0},
+            "out_tick": {"type": "integer", "minimum": 1},
+            "audio_in_tick": {"type": "integer", "minimum": 0, "description": "Source window start inside the sentence's audio (original narration or redub clip)."},
+            "audio_out_tick": {"type": "integer", "minimum": 1},
+            "claim_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+            "redub": {"type": "boolean", "default": false}
+          }
+        }}
+      }
+    },
+    "compiled_timeline_sha256": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/hash"}]}
+  },
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"},
+    "hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

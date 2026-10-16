@@ -1,0 +1,10 @@
+{
+  "version": "6.1.1",
+  "build": "essentials_build-www.gyan.dev",
+  "license": "GPLv3-enabled build; upstream licenses retained; operator may redistribute only under build license",
+  "source": "existing authorized FFmpeg build copied byte-for-byte",
+  "files": {
+    "ffmpeg.exe": "273f9665ef6f547e00a5c6dec464bd9eeb3f3e7e2f05f2485aecd763e908f611",
+    "ffprobe.exe": "ea736dbcae63ade8b653318eb13f3dbbe8fe863b0afddf9785faf61965ca8b36"
+  }
+}

@@ -1,0 +1,97 @@
+[
+  {
+    "reason": "Moved one directory deeper; resolve root using parents[2].",
+    "path": "scripts/validation/check-ark-text-agent-script.py",
+    "rollback_copy": "archive/housekeeping-20261013/originals/scripts/validation/check-ark-text-agent-script.py"
+  },
+  {
+    "reason": "Moved one directory deeper; resolve root using parents[2].",
+    "path": "scripts/validation/inspect-torch-bridge.py",
+    "rollback_copy": "archive/housekeeping-20261013/originals/scripts/validation/inspect-torch-bridge.py"
+  },
+  {
+    "reason": "Moved one directory deeper; resolve root using parents[2].",
+    "path": "scripts/validation/qualify-ark-text-agent.py",
+    "rollback_copy": "archive/housekeeping-20261013/originals/scripts/validation/qualify-ark-text-agent.py"
+  },
+  {
+    "reason": "Moved one directory deeper; resolve root using parents[2].",
+    "path": "scripts/validation/qualify-ark.py",
+    "rollback_copy": "archive/housekeeping-20261013/originals/scripts/validation/qualify-ark.py"
+  },
+  {
+    "reason": "Moved one directory deeper; resolve root using parents[2].",
+    "path": "scripts/validation/qualify-fixtures.py",
+    "rollback_copy": "archive/housekeeping-20261013/originals/scripts/validation/qualify-fixtures.py"
+  },
+  {
+    "reason": "Moved one directory deeper; resolve root using parents[2].",
+    "path": "scripts/validation/qualify-torch-aux.py",
+    "rollback_copy": "archive/housekeeping-20261013/originals/scripts/validation/qualify-torch-aux.py"
+  },
+  {
+    "reason": "Moved one directory deeper; resolve root using parents[2].",
+    "path": "scripts/validation/qualify-vision.py",
+    "rollback_copy": "archive/housekeeping-20261013/originals/scripts/validation/qualify-vision.py"
+  },
+  {
+    "reason": "Moved one directory deeper; resolve root using parents[2].",
+    "path": "scripts/validation/qualify-voice.py",
+    "rollback_copy": "archive/housekeeping-20261013/originals/scripts/validation/qualify-voice.py"
+  },
+  {
+    "reason": "Moved one directory deeper; resolve root using parents[2].",
+    "path": "scripts/validation/run-real-fixtures.py",
+    "rollback_copy": "archive/housekeeping-20261013/originals/scripts/validation/run-real-fixtures.py"
+  },
+  {
+    "reason": "Moved one directory deeper; resolve root using parents[2].",
+    "path": "scripts/validation/test-live-incremental.py",
+    "rollback_copy": "archive/housekeeping-20261013/originals/scripts/validation/test-live-incremental.py"
+  },
+  {
+    "reason": "Moved one directory deeper; resolve root using parents[2].",
+    "path": "scripts/jobs/library-job.py",
+    "rollback_copy": "archive/housekeeping-20261013/originals/scripts/jobs/library-job.py"
+  },
+  {
+    "reason": "Moved one directory deeper; resolve root using parents[2].",
+    "path": "scripts/jobs/repair-live-shot.py",
+    "rollback_copy": "archive/housekeeping-20261013/originals/scripts/jobs/repair-live-shot.py"
+  },
+  {
+    "reason": "Internal child-script path follows _clean_job.py into diagnostics/.",
+    "path": "scripts/diagnostics/_run_all_ark.py",
+    "rollback_copy": "archive/housekeeping-20261013/originals/scripts/diagnostics/_run_all_ark.py"
+  },
+  {
+    "reason": "Active runbook path updated to validation/.",
+    "path": "docs/runbooks/auto-postprod-operator-v2.md",
+    "rollback_copy": "archive/housekeeping-20261013/originals/docs/runbooks/auto-postprod-operator-v2.md"
+  },
+  {
+    "reason": "Active runbook paths updated to validation/ and diagnostics/.",
+    "path": "docs/runbooks/ark-text-agent-v1.md",
+    "rollback_copy": "archive/housekeeping-20261013/originals/docs/runbooks/ark-text-agent-v1.md"
+  },
+  {
+    "reason": "Active account guide path updated to jobs/.",
+    "path": "docs/accounts/laozhou-tianyiqing.md",
+    "rollback_copy": "archive/housekeeping-20261013/originals/docs/accounts/laozhou-tianyiqing.md"
+  },
+  {
+    "reason": "Directory table reflects the new script categories.",
+    "path": "README.md",
+    "rollback_copy": "archive/housekeeping-20261013/originals/README.md"
+  },
+  {
+    "reason": "Script index rewritten to document actual tree and fixed paths.",
+    "path": "scripts/README.md",
+    "rollback_copy": "archive/housekeeping-20261013/originals/scripts/README.md"
+  },
+  {
+    "path": "docs/README.md",
+    "reason": "Added navigation link to the directory restructure record.",
+    "rollback_copy": "archive/housekeeping-20261013/originals/docs/README.md"
+  }
+]

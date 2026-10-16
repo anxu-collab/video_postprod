@@ -1,0 +1,40 @@
+{
+  "schema_version": "script-skill-registry/v1",
+  "skills": [
+    {
+      "id": "health-supplement-selling",
+      "version": "1.4.0",
+      "name": "保健品组装、润色与审稿返修",
+      "description": "中段开放改写，审稿中可修问题交回口播Agent，最多两次返修；首尾效果词锁定、事实缺口保留。",
+      "rules_path": ".agents/skills/health-supplement-selling/rules-zh-v1.4.txt"
+    },
+    {
+      "id": "health-supplement-selling",
+      "version": "1.3.0",
+      "name": "保健品组装后中段开放润色",
+      "description": "固定开头结尾及必要效果词，中间可合句拆句、重排和自然改写；事实关系独立检查。",
+      "rules_path": ".agents/skills/health-supplement-selling/rules-zh-v1.3.txt"
+    },
+    {
+      "id": "health-supplement-selling",
+      "version": "1.2.0",
+      "name": "保健品话术库组装与受限润色",
+      "description": "程序从选定库句组装，云端只选衔接变体；固定开头结尾、效果词与作用对象受程序保护。事实核查独立。",
+      "rules_path": ".agents/skills/health-supplement-selling/rules-zh-v1.2.txt"
+    },
+    {
+      "id": "health-supplement-selling",
+      "version": "1.0.0",
+      "name": "保健品口播历史结构",
+      "description": "历史1.0.0兼容入口，非当前组装流程。原规则含待复核案例，结构加载不代表事实审核通过。",
+      "rules_path": ".agents/skills/health-supplement-selling/rules-zh.txt"
+    },
+    {
+      "id": "health-supplement-selling",
+      "version": "1.1.0",
+      "name": "保健品口播历史五句职责",
+      "description": "历史1.1.0兼容入口，非当前组装流程。具体场景、解释信息、单一核心价值、不同支持信息与行动引导。",
+      "rules_path": ".agents/skills/health-supplement-selling/rules-zh-v1.1.txt"
+    }
+  ]
+}

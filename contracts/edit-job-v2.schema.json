@@ -1,0 +1,301 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:laox:auto-postprod:edit-job-v2",
+  "title": "Immutable editing job revision v2 (full-script, three narration entrances, staged confirmations)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "job_id", "revision", "parent_revision", "account", "profile", "intent", "product_documents", "claims", "assets", "script_input", "narration_input", "providers", "templates", "overrides", "v2_overrides", "cost", "output", "review_policy", "changed_paths"],
+  "properties": {
+    "schema_version": {"const": "edit-job/v2"},
+    "job_id": {"$ref": "#/$defs/id"},
+    "revision": {"type": "integer", "minimum": 1},
+    "parent_revision": {"type": ["integer", "null"], "minimum": 1},
+    "account": {"$ref": "#/$defs/id", "description": "Registered account id; config/account_profiles.json maps it to the calling project's profile."},
+    "profile": {"$ref": "#/$defs/id", "description": "Content line; must be listed in the account profile's profiles."},
+    "account_profile_sha256": {"$ref": "#/$defs/hash", "description": "Pinned account profile snapshot. Filled on first submission; revisions keep it."},
+    "intent": {
+      "type": "object", "additionalProperties": false,
+      "required": ["brief", "language", "target_duration_ticks", "product_badge_requested"],
+      "properties": {
+        "brief": {"type": "string", "minLength": 1, "maxLength": 20000},
+        "language": {"const": "zh"},
+        "target_duration_ticks": {"type": "integer", "minimum": 1920, "multipleOf": 1920},
+        "product_badge_requested": {"type": "boolean", "default": false},
+        "product_terms": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 2, "maxLength": 32},
+          "description": "Operator product keywords; hard constraint for shot selection."},
+        "selection_mode": {"enum": ["precise", "whole_clip", "beat"], "default": "precise",
+          "description": "r4: whole_clip = whole source files selected/merged by coarse relevance (new user default flow); precise = per-sentence windows with r3 semantic/confirmed-interval gates; beat = sentence-paced short shots matched to material-card semantics (assets whose provenance is a reviewed material-library clip card). Absent = precise (legacy compatibility)."},
+        "max_duration_ticks": {"type": "integer", "minimum": 1920, "multipleOf": 1920,
+          "description": "Hard ceiling for the synthesized narration; longer audio stops the job before narration confirm."}
+      }
+    },
+    "product_documents": {
+      "type": "array", "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["document_id", "path", "sha256", "media_type"],
+        "properties": {
+          "document_id": {"$ref": "#/$defs/id"},
+          "path": {"$ref": "#/$defs/path"},
+          "sha256": {"$ref": "#/$defs/hash"},
+          "media_type": {"enum": ["text/plain", "text/markdown", "application/json", "application/pdf"]}
+        }
+      }
+    },
+    "claims": {
+      "type": "array", "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["claim_id", "document_id", "source_span", "text"],
+        "properties": {
+          "claim_id": {"$ref": "#/$defs/id"},
+          "document_id": {"$ref": "#/$defs/id"},
+          "source_span": {"type": "string", "minLength": 1, "maxLength": 1000},
+          "text": {"type": "string", "minLength": 1, "maxLength": 10000}
+        }
+      }
+    },
+    "assets": {
+      "type": "array", "minItems": 1, "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["asset_id", "path", "sha256", "mode", "role", "analysis", "provenance_ref", "locked"],
+        "properties": {
+          "asset_id": {"$ref": "#/$defs/id"},
+          "path": {"$ref": "#/$defs/path"},
+          "sha256": {"$ref": "#/$defs/hash"},
+          "mode": {"enum": ["broll", "spoken_locked", "avatar_redub"]},
+          "role": {"enum": ["product", "fixed_opening", "fixed_closing", "locked_body"]},
+          "analysis": {
+            "type": "object", "additionalProperties": false, "required": ["mode"],
+            "properties": {"mode": {"enum": ["single_shot", "detect_scenes", "material_card"]}}
+          },
+          "provenance_ref": {"$ref": "#/$defs/path"},
+          "locked": {
+            "oneOf": [
+              {"type": "null"},
+              {
+                "type": "object", "additionalProperties": false,
+                "required": ["transcript", "audio_stream_index", "evidence_ref"],
+                "properties": {
+                  "transcript": {"type": "string", "minLength": 1},
+                  "audio_stream_index": {"type": "integer", "minimum": 0},
+                  "evidence_ref": {"$ref": "#/$defs/path"}
+                }
+              }
+            ]
+          }
+        },
+        "allOf": [
+          {"if": {"properties": {"mode": {"const": "spoken_locked"}}, "required": ["mode"]}, "then": {"properties": {"locked": {"type": "object"}}}, "else": {"properties": {"locked": {"type": "null"}}}},
+          {"if": {"properties": {"role": {"enum": ["fixed_opening", "fixed_closing", "locked_body"]}}, "required": ["role"]}, "then": {"properties": {"mode": {"const": "spoken_locked"}}}},
+          {"if": {"properties": {"role": {"const": "product"}}, "required": ["role"]}, "then": {"properties": {"mode": {"const": "broll"}}}}
+        ]
+      }
+    },
+    "script_input": {
+      "type": "object", "additionalProperties": false,
+      "required": ["mode", "script_text", "script_sha256"],
+      "properties": {
+        "mode": {"enum": ["pasted", "generated"]},
+        "draft_source": {"type":"object","additionalProperties":false,"required":["draft_id","script_sha256"],"dependentRequired":{"assembly_sha256":["unit_count"],"unit_count":["assembly_sha256"]},"properties":{"draft_id":{"type":"string","pattern":"^[A-Za-z0-9][A-Za-z0-9_-]{0,95}$"},"script_sha256":{"$ref":"#/$defs/hash"},"assembly_sha256":{"$ref":"#/$defs/hash"},"unit_count":{"type":"integer","minimum":1,"maximum":30}}},
+        "regeneration_id": {"$ref": "#/$defs/id", "description": "Explicit local request to write again, even using the same skill. A retry keeps this id; a new rewrite gets a new id."},
+        "skill": {"type": "object", "additionalProperties": false,
+          "required": ["id", "version"], "properties": {
+            "id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"},
+            "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+            "snapshot_sha256": {"$ref": "#/$defs/hash"}
+          }, "description": "Explicit local selection; server pins rules. Required at submission for generation, optional for readable historical jobs."},
+        "script_text": {"oneOf": [{"type": "null"}, {"type": "string", "minLength": 1, "maxLength": 20000}]},
+        "script_sha256": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/hash"}]},
+        "generation_note": {"oneOf": [{"type": "null"}, {"type": "string", "maxLength": 2000}]}
+      },
+      "allOf": [
+        {"if": {"properties": {"mode": {"const": "pasted"}}, "required": ["mode"]}, "then": {"properties": {"script_text": {"type": "string"}, "script_sha256": {"$ref": "#/$defs/hash"}}}}
+      ],
+      "description": "Pasted full script or a generated-draft marker. The script text hash binds stage confirmations; editing text invalidates them."
+    },
+    "narration_input": {
+      "type": "object", "additionalProperties": false,
+      "required": ["mode", "preset", "uploaded", "history"],
+      "properties": {
+        "mode": {"enum": ["auto", "uploaded", "history"]},
+        "preset": {"oneOf": [{"type": "null"}, {"type": "string", "maxLength": 128}]},
+        "uploaded": {"oneOf": [{"type": "null"}, {
+          "type": "object", "additionalProperties": false, "required": ["path", "sha256"],
+          "properties": {"path": {"$ref": "#/$defs/path"}, "sha256": {"$ref": "#/$defs/hash"}}
+        }]},
+        "history": {"oneOf": [{"type": "null"}, {
+          "type": "object", "additionalProperties": false, "required": ["job_id", "revision", "narration_sha256"],
+          "properties": {"job_id": {"$ref": "#/$defs/id"}, "revision": {"type": "integer", "minimum": 1}, "narration_sha256": {"$ref": "#/$defs/hash"}}
+        }]}
+      },
+      "allOf": [
+        {"if": {"properties": {"mode": {"const": "uploaded"}}, "required": ["mode"]}, "then": {"properties": {"uploaded": {"type": "object"}, "history": {"type": "null"}}}},
+        {"if": {"properties": {"mode": {"const": "history"}}, "required": ["mode"]}, "then": {"properties": {"history": {"type": "object"}, "uploaded": {"type": "null"}}}},
+        {"if": {"properties": {"mode": {"const": "auto"}}, "required": ["mode"]}, "then": {"properties": {"uploaded": {"type": "null"}, "history": {"type": "null"}, "preset": {"type": "string"}}}}
+      ],
+      "description": "Exactly one narration entrance. No silent fallback between modes; uploaded/history create no TTS nodes."
+    },
+    "providers": {
+      "type": "object", "additionalProperties": false,
+      "required": ["text", "vision", "tts", "asr", "lipsync"],
+      "properties": {
+        "text": {"$ref": "#/$defs/id"}, "vision": {"$ref": "#/$defs/id"},
+        "tts": {"$ref": "#/$defs/id"}, "asr": {"$ref": "#/$defs/id"},
+        "lipsync": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/id"}]}
+      }
+    },
+    "templates": {
+      "type": "object", "additionalProperties": false,
+      "required": ["subtitle", "bgm", "effects", "sfx", "product_badge"],
+      "properties": {
+        "subtitle": {"$ref": "#/$defs/template"},
+        "bgm": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/template"}]},
+        "effects": {"type": "array", "items": {"$ref": "#/$defs/template"}},
+        "sfx": {"type": "array", "items": {"$ref": "#/$defs/template"}},
+        "product_badge": {
+          "type": "object", "additionalProperties": false, "required": ["enabled", "template"],
+          "properties": {"enabled": {"type": "boolean", "default": false}, "template": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/template"}]}},
+          "allOf": [{"if": {"properties": {"enabled": {"const": true}}, "required": ["enabled"]}, "then": {"properties": {"template": {"type": "object"}}}, "else": {"properties": {"template": {"type": "null"}}}}]
+        }
+      }
+    },
+    "overrides": {
+      "type": "object", "additionalProperties": false,
+      "required": ["base_timeline_sha256", "subtitle_edits", "bgm_override", "shot_edits", "speech_edits", "template_overrides"],
+      "properties": {
+        "base_timeline_sha256": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/hash"}]},
+        "subtitle_edits": {"type": "array", "items": {
+          "type": "object", "additionalProperties": false, "required": ["cue_id", "text"],
+          "properties": {"cue_id": {"$ref": "#/$defs/id"}, "text": {"type": "string", "minLength": 1}, "start_tick": {"type": "integer", "minimum": 0}, "end_tick": {"type": "integer", "minimum": 1}},
+          "dependentRequired": {"start_tick": ["end_tick"], "end_tick": ["start_tick"]}
+        }},
+        "bgm_override": {"oneOf": [{"type": "null"}, {
+          "type": "object", "additionalProperties": false, "required": ["path", "sha256", "provenance_ref", "gain_db"],
+          "properties": {"path": {"$ref": "#/$defs/path"}, "sha256": {"$ref": "#/$defs/hash"}, "provenance_ref": {"$ref": "#/$defs/path"}, "gain_db": {"type": "number", "minimum": -96, "maximum": 0}}
+        }]},
+        "shot_edits": {"type": "array", "items": {}},
+        "speech_edits": {"type": "array", "items": {}},
+        "template_overrides": {"type": "array", "items": {
+          "type": "object", "additionalProperties": false, "required": ["template", "params"],
+          "properties": {"template": {"$ref": "#/$defs/template"}, "params": {"type": "object", "maxProperties": 32}}
+        }}
+      },
+      "description": "v1-compatible edit semantics for subtitle text/timing and BGM; v2 shot/speech changes use v2_overrides instead."
+    },
+    "v2_overrides": {
+      "type": "object", "additionalProperties": false,
+      "required": ["clip_replacements", "sentence_redubs"],
+      "properties": {
+        "clip_replacements": {"type": "array", "items": {
+          "type": "object", "additionalProperties": false,
+          "required": ["clip_id", "candidate_id", "reason"],
+          "properties": {
+            "clip_id": {"$ref": "#/$defs/id"}, "candidate_id": {"$ref": "#/$defs/id"},
+            "allow_source_window_overlap": {"type": "boolean", "default": false},
+            "reason": {"type": "string", "minLength": 1, "maxLength": 2000}
+          }
+        }},
+        "sentence_redubs": {"type": "array", "items": {
+          "type": "object", "additionalProperties": false,
+          "required": ["sentence_id", "text"],
+          "properties": {"sentence_id": {"$ref": "#/$defs/id"}, "text": {"type": "string", "minLength": 1, "maxLength": 2000},
+            "audio": {"oneOf": [{"type": "null"}, {
+              "type": "object", "additionalProperties": false, "required": ["path", "sha256"],
+              "properties": {"path": {"$ref": "#/$defs/path"}, "sha256": {"$ref": "#/$defs/hash"}}
+            }], "description": "Operator-provided corrected audio for this sentence; required when the job narration is not auto TTS."}
+          }
+        }},
+        "tail_trim": {"oneOf": [{"type": "null"}, {
+          "type": "object", "additionalProperties": false, "required": ["max_silence_ticks", "reason"],
+          "properties": {
+            "max_silence_ticks": {"type": "integer", "minimum": 0},
+            "reason": {"type": "string", "minLength": 1, "maxLength": 2000}
+          },
+          "description": "EXPLICIT operator choice to trim trailing silence beyond this many ticks after the last word. Without it the confirmed narration is preserved in full, including leading/trailing silence and pauses."
+        }]},
+        "confirmed_windows": {"type": "array", "items": {
+          "type": "object", "additionalProperties": false,
+          "required": ["sentence_id", "source_asset_id", "source_sha256", "in_tick", "out_tick",
+                       "action_kind", "action_object", "basis", "operator_id", "allow_source_window_overlap"],
+          "properties": {
+            "sentence_id": {"$ref": "#/$defs/id"},
+            "source_asset_id": {"$ref": "#/$defs/id"},
+            "source_sha256": {"$ref": "#/$defs/hash"},
+            "in_tick": {"type": "integer", "minimum": 0},
+            "out_tick": {"type": "integer", "minimum": 1},
+            "action_kind": {"enum": ["open_packaging", "split_fruit", "takeout", "wrapup"]},
+            "action_object": {"enum": ["packaging", "fruit", "flesh", "product", "tool", "unknown"]},
+            "basis": {"type": "string", "minLength": 1, "maxLength": 2000},
+            "operator_id": {"type": "string", "minLength": 1, "maxLength": 64},
+            "allow_source_window_overlap": {"type": "boolean", "default": false}
+          },
+          "description": "r3: operator-confirmed REAL source windows resolving SHOT_EVIDENCE_INSUFFICIENT. Bound to the sentence's own (action_kind, action_object) and an explicit source range; they never unlock a different action and never bypass product/bounds/fixed-original-audio/reuse constraints."
+        }},
+        "whole_clip_replacements": {"type": "array", "items": {
+          "type": "object", "additionalProperties": false,
+          "required": ["clip_id", "source_asset_id", "reason"],
+          "properties": {
+            "clip_id": {"$ref": "#/$defs/id"},
+            "source_asset_id": {"$ref": "#/$defs/id"},
+            "reason": {"type": "string", "minLength": 1, "maxLength": 2000}
+          },
+          "description": "r4 whole-clip mode: swap one chosen clip's WHOLE source file. Coarse relevance still enforced; duration changes re-flow the picture timeline only — narration/subtitles/BGM are untouched and nothing re-synthesizes."
+        }}
+      },
+      "description": "Explicit operator edits recorded with reasons; the planner validates them against the same evidence rules."
+    },
+    "cost": {
+      "type": "object", "additionalProperties": false,
+      "required": ["paid_enabled", "currency", "job_limit_micros", "daily_limit_micros", "max_paid_requests"],
+      "properties": {
+        "paid_enabled": {"type": "boolean", "default": false},
+        "currency": {"const": "CNY"},
+        "job_limit_micros": {"type": "integer", "minimum": 0},
+        "daily_limit_micros": {"type": "integer", "minimum": 0},
+        "max_paid_requests": {"type": "integer", "minimum": 0}
+      },
+      "allOf": [{"if": {"properties": {"paid_enabled": {"const": true}}, "required": ["paid_enabled"]}, "then": {"properties": {"job_limit_micros": {"minimum": 1}, "daily_limit_micros": {"minimum": 1}, "max_paid_requests": {"minimum": 1}}}}]
+    },
+    "output": {
+      "type": "object", "additionalProperties": false,
+      "required": ["width", "height", "fps", "audio_sample_rate"],
+      "properties": {"width": {"const": 768}, "height": {"const": 1376}, "fps": {"const": 25}, "audio_sample_rate": {"const": 48000}}
+    },
+    "review_policy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["visual", "lipsync", "content"],
+      "properties": {"visual": {"const": "manual"}, "lipsync": {"const": "manual"}, "content": {"const": "evidence_required"}}
+    },
+    "changed_paths": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^/", "maxLength": 500}},
+    "clef_selector": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "mode": {"enum": ["off", "shadow", "active"], "default": "shadow"},
+        "backend": {"enum": ["local", "mock"], "default": "local"},
+        "timeout_sec": {"type": "number", "exclusiveMinimum": 0, "maximum": 120, "default": 20},
+        "max_requests": {"type": "integer", "minimum": 1, "maximum": 512, "default": 64},
+        "max_retries": {"type": "integer", "minimum": 0, "maximum": 2, "default": 0}
+      },
+      "description": "Scheduler-only, text-only Clef selection. Shadow preserves baseline; off loads no model; active changes only free B-roll. Mock is explicitly labelled and is not model quality acceptance."
+    },
+    "material_manifest": {
+      "type": "object", "additionalProperties": false, "required": ["path", "sha256"],
+      "properties": {
+        "path": {"$ref": "#/$defs/path"},
+        "sha256": {"$ref": "#/$defs/hash"},
+        "product_id": {"oneOf": [{"type": "null"}, {"type": "string", "maxLength": 128}]}
+      },
+      "description": "Optional reviewed material manifest (material-manifest/v1). Entries bind to this job's own product assets by SHA256; production import refuses test-flagged manifests and non-PASS/stale/restricted entries. Jobs without this field behave exactly as before."
+    }
+  },
+  "allOf": [
+    {"if": {"properties": {"revision": {"const": 1}}, "required": ["revision"]}, "then": {"properties": {"parent_revision": {"type": "null"}}}, "else": {"properties": {"parent_revision": {"type": "integer"}}}},
+    {"if": {"properties": {"script_input": {"properties": {"mode": {"const": "pasted"}}, "required": ["mode"]}}, "required": ["script_input"]}, "then": {"properties": {"script_input": {"properties": {"script_text": {"type": "string"}}}}}},
+    {"if": {"properties": {"intent": {"properties": {"product_badge_requested": {"const": false}}, "required": ["product_badge_requested"]}}, "required": ["intent"]}, "then": {"properties": {"templates": {"properties": {"product_badge": {"properties": {"enabled": {"const": false}}}}}}}}
+  ],
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"},
+    "hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "path": {"type": "string", "minLength": 1, "maxLength": 4096, "description": "Runtime validates absolute/local allowlisted paths, realpath and SHA256."},
+    "template": {"type": "object", "additionalProperties": false, "required": ["template_id", "version"], "properties": {"template_id": {"$ref": "#/$defs/id"}, "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"}}}
+  }
+}

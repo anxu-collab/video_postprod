@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-13",
+  "status": "archived",
+  "files": [
+    {
+      "name": "$null",
+      "source": "F:\\codex\\laox_account\\video_postprod\\$null",
+      "destination": "F:\\codex\\laox_account\\video_postprod\\archive\\housekeeping-20261013\\$null",
+      "bytes": 0,
+      "original_last_write": "2026-10-11T09:01:49.4440803+08:00",
+      "sha256_before": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "sha256_after": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "name": "CONSOLE",
+      "source": "F:\\codex\\laox_account\\video_postprod\\CONSOLE",
+      "destination": "F:\\codex\\laox_account\\video_postprod\\archive\\housekeeping-20261013\\CONSOLE",
+      "bytes": 8198,
+      "original_last_write": "2026-10-11T11:31:24.5203860+08:00",
+      "sha256_before": "860FC552DA72DB7BFEA357C339E3B4C875A3519E40E51849AB4638D32DBE66E5",
+      "sha256_after": "860FC552DA72DB7BFEA357C339E3B4C875A3519E40E51849AB4638D32DBE66E5"
+    }
+  ]
+}

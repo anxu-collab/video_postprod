@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:laox:auto-postprod:subtitle-review-v1",
+  "title": "Per-sentence script vs actual-audio comparison awaiting operator listening decisions",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "job_id", "revision", "audio", "script", "items"],
+  "properties": {
+    "schema_version": {"const": "subtitle-review/v1"},
+    "job_id": {"$ref": "#/$defs/id"},
+    "revision": {"type": "integer", "minimum": 1},
+    "audio": {
+      "type": "object", "additionalProperties": false,
+      "required": ["audio_sha256", "alignment_evidence_sha256", "actual_duration_ticks"],
+      "properties": {
+        "audio_sha256": {"$ref": "#/$defs/hash"},
+        "alignment_evidence_sha256": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/hash"}], "description": "Filled by the pipeline from the real ASR evidence file hash."},
+        "actual_duration_ticks": {"type": "integer", "minimum": 1}
+      }
+    },
+    "script": {
+      "type": "object", "additionalProperties": false, "required": ["script_sha256", "sentence_count"],
+      "properties": {"script_sha256": {"$ref": "#/$defs/hash"}, "sentence_count": {"type": "integer", "minimum": 1}}
+    },
+    "items": {
+      "type": "array", "minItems": 1, "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["sentence_id", "script_text", "asr_text", "words", "window", "coverage", "diff_type", "status", "decision"],
+        "properties": {
+          "sentence_id": {"$ref": "#/$defs/id"},
+          "script_text": {"type": "string", "minLength": 1},
+          "audio_sha256": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/hash"}],
+            "description": "Per-item binding: the actual audio this sentence's window/ASR came from (main narration or a redub clip). Decisions must match it to apply."},
+          "asr_text": {"oneOf": [{"type": "null"}, {"type": "string"}]},
+          "words": {"type": "array", "items": {
+            "type": "object", "additionalProperties": false, "required": ["text", "start_tick", "end_tick"],
+            "properties": {"text": {"type": "string"}, "start_tick": {"type": "integer", "minimum": 0}, "end_tick": {"type": "integer", "minimum": 1}}
+          }},
+          "window": {"oneOf": [{"type": "null"}, {
+            "type": "object", "additionalProperties": false, "required": ["in_tick", "out_tick"],
+            "properties": {"in_tick": {"type": "integer", "minimum": 0}, "out_tick": {"type": "integer", "minimum": 1}}
+          }]},
+          "coverage": {"type": "number", "minimum": 0, "maximum": 1},
+          "diff_type": {"enum": ["none", "substitution", "missing", "extra", "mixed", "no_match"]},
+          "status": {"enum": ["matched", "asr_error_confirmed", "speech_error_confirmed", "omission", "addition", "uncertain"]},
+          "decision": {"oneOf": [{"type": "null"}, {
+            "type": "object", "additionalProperties": false,
+            "required": ["choice", "operator_id", "audio_sha256_at_decision"],
+            "properties": {
+              "choice": {"enum": ["asr_error_confirmed", "speech_error_confirmed", "confirm_omission", "confirm_addition", "confirm_matched"]},
+              "operator_id": {"type": "string", "minLength": 1, "maxLength": 128},
+              "notes": {"type": "string", "maxLength": 2000},
+              "utc": {"oneOf": [{"type": "null"}, {"type": "string"}]},
+              "audio_sha256_at_decision": {"$ref": "#/$defs/hash"}
+            }
+          }]}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"},
+    "hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

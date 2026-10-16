@@ -1,0 +1,22 @@
+:root{font-family:"Microsoft YaHei",system-ui;color:#19332c;background:#edf2ee}*{box-sizing:border-box}main{max-width:960px;margin:42px auto;padding:0 22px}h1{font-size:30px}h2{font-size:20px;margin-top:0}h3{font-size:16px;margin:10px 0 4px}p{line-height:1.8;color:#52655e}section{background:white;border-radius:18px;padding:24px;margin:24px 0;border:1px solid #d7e1db}label{display:block;margin:15px 0;line-height:1.8}input:not([type=checkbox]),input:not([type=radio]),textarea,select{display:block;width:100%;padding:10px;border:1px solid #cad7cf;border-radius:7px;font:inherit}input[type=file]{display:block}button{background:#246e53;color:white;border:0;border-radius:8px;padding:11px 18px;margin:6px 8px 6px 0;cursor:pointer}button.secondary{background:#52655e}button.danger{background:#a33c3c}button:disabled{opacity:.5}video{max-height:600px;max-width:100%;background:#16241f;border-radius:8px}audio{width:100%;margin:6px 0}pre{overflow:auto;font-size:12px;white-space:pre-wrap;max-height:280px}#status{padding:13px;background:#dae8df;border-radius:9px}.asset,.job{padding:15px 0;border-bottom:1px solid #e1e9e4}.group{border:1px dashed #cad7cf;border-radius:9px;padding:4px 14px;margin:10px 0}.sent{border:1px solid #d7e1db;border-radius:9px;padding:10px;margin:8px 0;background:#f6faf7}.sent .texts{display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:14px}.sent .lab{color:#52655e;font-size:12px}.sent .ops{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.sent button{padding:7px 12px;font-size:13px}.badge{font-size:12px;padding:3px 10px;border-radius:10px;background:#d7e1db;white-space:nowrap}.badge.await{background:#f0d9a8}.badge.ready{background:#cfe3ee}.badge.done{background:#cde8d6}.badge.fail{background:#eecfce}.shot{border:1px solid #d7e1db;border-radius:9px;padding:10px;margin:8px 0;background:#f6faf7;font-size:14px}.shot .alt{border-top:1px dotted #cad7cf;margin-top:8px;padding-top:8px}.shot .alt-head{font-size:14px;margin-bottom:6px}
+.cand{display:flex;flex-direction:column;gap:6px;border:1px solid #d7e1db;border-radius:8px;padding:10px;margin:8px 0;background:#fff}
+.cand-head{display:flex;gap:10px;align-items:flex-start}
+.cand-head input[type=radio]{flex:none;margin-top:5px;width:auto}
+.cand-desc{flex:1;min-width:0}
+.cand-meta{font-size:12px;color:#52655e;margin-bottom:2px}
+.cand-text{font-size:14px;line-height:1.6;word-break:break-word;overflow-wrap:anywhere}
+.cand-ops{display:flex;gap:8px;padding-left:28px}
+.alt-form{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.alt-form .alt-reason{width:100%}
+.alt-check{display:flex;flex-direction:row;gap:8px;align-items:center;margin:0}
+.alt-check input[type=checkbox]{width:auto;margin:0}.shot button{padding:7px 12px;font-size:13px}.cues .cue{display:flex;gap:8px;align-items:center;margin:4px 0}.cues .cue input{flex:1}.asset .row{display:flex;gap:8px;flex-wrap:wrap}.asset .row>*{flex:1;min-width:150px}footer{font-size:13px;color:#62746a;margin-bottom:40px}
+
+.clef-audit{border:1px solid #b9cfc1;background:#f9fcfa;padding:18px;margin:16px 0;border-radius:12px}.clef-tabs{display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid #d7e1db;padding-bottom:8px}.clef-candidate,.clef-history{background:white;border:1px solid #d7e1db;border-radius:9px;padding:12px;margin:10px 0}.clef-meta,.clef-muted,.clef-note{color:#52655e;font-size:13px}.clef-gates{color:#8b4b23;font-size:13px;overflow-wrap:anywhere}.clef-error{color:#9b2727;background:#fff0ef;border:1px solid #e9c1bf;border-radius:8px;padding:10px;white-space:pre-wrap;overflow-wrap:anywhere}.clef-query{border:1px dashed #cad7cf;border-radius:9px;padding:12px;margin-top:16px}.clef-query label{margin:8px 0}.clef-query button{margin-top:10px}.clef-history pre,.clef-candidate pre{max-height:420px}#clefPreviewStatus{font-size:13px;color:#52655e}
+
+
+/* human score table */
+.human-score .score-card{border:1px solid #333;border-radius:8px;padding:10px;margin:10px 0;background:#111}
+.human-score .score-table{width:100%;border-collapse:collapse;font-size:12px}
+.human-score .score-table th,.human-score .score-table td{border-bottom:1px solid #333;padding:4px 6px;vertical-align:top}
+.human-score .score-table input[type=number]{width:4em}
+.human-score .score-table input[type=text]{width:8em}

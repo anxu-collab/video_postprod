@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:laox:auto-postprod:timeline-v1",
+  "title": "Unified sample/frame timeline v1",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "timeline_id", "job_id", "revision", "timescale", "canvas", "duration_ticks", "resources", "video_clips", "audio_events", "voice_stem_ref", "subtitles", "template_events", "review"],
+  "properties": {
+    "schema_version": {"const": "timeline/v1"},
+    "timeline_id": {"$ref": "#/$defs/id"}, "job_id": {"$ref": "#/$defs/id"}, "revision": {"type": "integer", "minimum": 1},
+    "timescale": {"const": 48000},
+    "canvas": {"type": "object", "additionalProperties": false, "required": ["width", "height", "fps", "sar"], "properties": {"width": {"const": 768}, "height": {"const": 1376}, "fps": {"const": 25}, "sar": {"const": "1:1"}}},
+    "duration_ticks": {"type": "integer", "minimum": 1920, "multipleOf": 1920},
+    "resources": {
+      "type": "array", "minItems": 1, "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["ref_id", "path", "sha256", "kind", "probe_ref", "provenance_ref"],
+        "properties": {
+          "ref_id": {"$ref": "#/$defs/id"}, "path": {"$ref": "#/$defs/path"}, "sha256": {"$ref": "#/$defs/hash"},
+          "kind": {"enum": ["video", "audio", "image", "probe", "evidence", "subtitle", "font", "manifest"]},
+          "probe_ref": {"$ref": "#/$defs/nullableRef"}, "provenance_ref": {"$ref": "#/$defs/nullableRef"}
+        }
+      }
+    },
+    "video_clips": {
+      "type": "array", "minItems": 1, "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["clip_id", "mode", "base_source_ref", "video_ref", "source_in_tick", "source_out_tick", "timeline_start_tick", "duration_tick", "speed", "boundary_evidence_ref", "visual_evidence_ref", "lip_evidence_ref", "lip_result_ref"],
+        "properties": {
+          "clip_id": {"$ref": "#/$defs/id"}, "mode": {"enum": ["broll", "spoken_locked", "avatar_redub"]},
+          "base_source_ref": {"$ref": "#/$defs/id"}, "video_ref": {"$ref": "#/$defs/id"},
+          "source_in_tick": {"$ref": "#/$defs/tick"}, "source_out_tick": {"type": "integer", "minimum": 1},
+          "timeline_start_tick": {"type": "integer", "minimum": 0, "multipleOf": 1920},
+          "duration_tick": {"type": "integer", "minimum": 1920, "multipleOf": 1920},
+          "speed": {"const": 1},
+          "boundary_evidence_ref": {"$ref": "#/$defs/nullableRef"}, "visual_evidence_ref": {"$ref": "#/$defs/nullableRef"},
+          "lip_evidence_ref": {"$ref": "#/$defs/nullableRef"}, "lip_result_ref": {"$ref": "#/$defs/nullableRef"}
+        },
+        "allOf": [
+          {"if": {"properties": {"mode": {"enum": ["spoken_locked", "avatar_redub"]}}, "required": ["mode"]}, "then": {"properties": {"boundary_evidence_ref": {"$ref": "#/$defs/id"}}}},
+          {"if": {"properties": {"mode": {"const": "avatar_redub"}}, "required": ["mode"]}, "then": {"properties": {"lip_result_ref": {"$ref": "#/$defs/id"}}}, "else": {"properties": {"lip_result_ref": {"type": "null"}}}},
+          {"if": {"properties": {"mode": {"const": "broll"}}, "required": ["mode"]}, "then": {"properties": {"lip_evidence_ref": {"type": "null"}}}}
+        ]
+      }
+    },
+    "audio_events": {
+      "type": "array", "minItems": 1, "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["event_id", "role", "audio_ref", "stream_index", "source_in_tick", "source_out_tick", "timeline_start_tick", "duration_tick", "gain_db", "sync_clip_id", "claim_ids", "alignment_ref"],
+        "properties": {
+          "event_id": {"$ref": "#/$defs/id"}, "role": {"enum": ["dialogue", "narration", "bgm", "sfx"]},
+          "audio_ref": {"$ref": "#/$defs/id"}, "stream_index": {"type": "integer", "minimum": 0},
+          "source_in_tick": {"$ref": "#/$defs/tick"}, "source_out_tick": {"type": "integer", "minimum": 1},
+          "timeline_start_tick": {"$ref": "#/$defs/tick"}, "duration_tick": {"type": "integer", "minimum": 1},
+          "gain_db": {"type": "number", "minimum": -96, "maximum": 12},
+          "sync_clip_id": {"$ref": "#/$defs/nullableRef"},
+          "claim_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+          "alignment_ref": {"$ref": "#/$defs/nullableRef"}
+        },
+        "allOf": [
+          {"if": {"properties": {"role": {"const": "dialogue"}}, "required": ["role"]}, "then": {"properties": {"sync_clip_id": {"$ref": "#/$defs/id"}}}, "else": {"properties": {"sync_clip_id": {"type": "null"}}}},
+          {"if": {"properties": {"role": {"enum": ["bgm", "sfx"]}}, "required": ["role"]}, "then": {"properties": {"claim_ids": {"maxItems": 0}, "alignment_ref": {"type": "null"}}}}
+        ]
+      }
+    },
+    "voice_stem_ref": {"$ref": "#/$defs/id"},
+    "subtitles": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source_audio_ref", "source_audio_sha256", "alignment_ref", "template", "cues"],
+      "properties": {
+        "source_audio_ref": {"$ref": "#/$defs/id"}, "source_audio_sha256": {"$ref": "#/$defs/hash"},
+        "alignment_ref": {"$ref": "#/$defs/id"}, "template": {"$ref": "#/$defs/template"},
+        "cues": {"type": "array", "items": {
+          "type": "object", "additionalProperties": false, "required": ["cue_id", "start_tick", "end_tick", "text", "claim_ids"],
+          "properties": {"cue_id": {"$ref": "#/$defs/id"}, "start_tick": {"$ref": "#/$defs/tick"}, "end_tick": {"type": "integer", "minimum": 1}, "text": {"type": "string", "minLength": 1}, "claim_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}}}
+        }}
+      }
+    },
+    "template_events": {
+      "type": "array", "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["event_id", "kind", "start_tick", "duration_tick", "template", "claim_ids", "params"],
+        "properties": {
+          "event_id": {"$ref": "#/$defs/id"}, "kind": {"enum": ["effect", "product_info"]},
+          "start_tick": {"$ref": "#/$defs/tick"}, "duration_tick": {"type": "integer", "minimum": 1},
+          "template": {"$ref": "#/$defs/template"},
+          "claim_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+          "params": {"type": "object", "maxProperties": 32, "description": "Validated against the referenced template parameter schema; arbitrary FFmpeg filters and persistent corner text are forbidden."}
+        },
+        "allOf": [{"if": {"properties": {"kind": {"const": "product_info"}}, "required": ["kind"]}, "then": {"properties": {"claim_ids": {"minItems": 1}}}}]
+      }
+    },
+    "review": {
+      "type": "object", "additionalProperties": false, "required": ["status", "evidence_refs"],
+      "properties": {"status": {"enum": ["pending", "technical_pass", "accepted", "rejected"]}, "evidence_refs": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}}},
+      "allOf": [{"if": {"properties": {"status": {"const": "accepted"}}, "required": ["status"]}, "then": {"properties": {"evidence_refs": {"minItems": 1}}}}]
+    }
+  },
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"},
+    "hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "path": {"type": "string", "minLength": 1, "maxLength": 4096},
+    "tick": {"type": "integer", "minimum": 0},
+    "nullableRef": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/id"}]},
+    "template": {"type": "object", "additionalProperties": false, "required": ["template_id", "version"], "properties": {"template_id": {"$ref": "#/$defs/id"}, "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"}}}
+  }
+}

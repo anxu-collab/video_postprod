@@ -1,0 +1,37 @@
+{
+  "schema_version": "ark-text-agent/v1",
+  "currency": "CNY",
+  "source": "https://docs.volcengine.com/docs/ark/model-pricing; https://ai.volcengine.com/model; https://docs.volcengine.com/docs/ark/model-list",
+  "verified_date": "2026-10-12",
+  "note": "剧本文案通道（providers.text=ark-text-agent）的唯一分档配置来源；当前模型与思考设置以 tiers 为准。script 用于整稿生成，review 用于事实核查与文字审片。费率字段供现有预算预留计算使用，verified_date 是历史记录，不代表当前模型、价格或文案质量已经重新验证。reserve_input_tokens 只用于预算预留上限，max_input_tokens 才是真实用量校验上界。",
+  "tiers": {
+    "script": {
+      "model": "deepseek-v4-1-flash-260910",
+      "context_window": 256000,
+      "max_input_tokens": 256000,
+      "max_output_tokens": 12288,
+      "reserve_input_tokens": 32768,
+      "reasoning_headroom": 8192,
+      "thinking": true,
+      "online_regular_per_million": {"input": "1.5", "output": "3.0"},
+      "conservative_bound_per_million": {"input": "3.0", "output": "6.0"},
+      "note": "整稿/短片剧本生成。方舟托管 DeepSeek-V4.1-Flash（260910），开启思考。思考 token 计入 completion_tokens，且可超过请求的 max_tokens，所以 reasoning_headroom 为 8192。定价按官方 deepseek-flash 空闲档保守取值。"
+    },
+    "review": {
+      "model": "doubao-seed-2-1-lite-260915",
+      "context_window": 1024000,
+      "max_input_tokens": 1024000,
+      "max_output_tokens": 2048,
+      "reserve_input_tokens": 16384,
+      "reasoning_headroom": 0,
+      "thinking": false,
+      "online_regular_per_million": {"input": "0.8", "output": "2.7"},
+      "conservative_bound_per_million": {"input": "1.6", "output": "5.4"},
+      "note": "事实核查（claims-*/script-review）与 Clef 文字审片（clef-review）。短结构化 JSON 输出，关闭深度思考以控成本与延迟。"
+    }
+  },
+  "global_authorization": {
+    "total_micros": 20000000,
+    "requests": 200
+  }
+}

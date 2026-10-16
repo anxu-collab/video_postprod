@@ -1,0 +1,74 @@
+# Machine-local environments and upstream checkouts
+/envs/
+/upstream/
+
+# Runtime assets, task history, outputs, state and private credentials
+/artifacts/
+/jobs/
+/logs/
+/output/
+/state/
+/delivery/
+
+# Secrets and local environment files
+.env
+.env.*
+*.pem
+credentials.json
+
+# Local tooling and Python caches
+/.playwright-mcp/
+/.pytest_cache/
+/.zcode/
+__pycache__/
+*.py[cod]
+
+# Preserve tools/ffmpeg/manifest.json, exclude local executables
+/tools/ffmpeg/ffmpeg.exe
+/tools/ffmpeg/ffprobe.exe
+
+# Industry phrase libraries and product copy stay on the local machine
+/assets/script_expressions/
+/assets/product_evidence/
+/config/script_assembly_recipes/
+/config/script_expression_catalog.json
+/config/controlled_phrase_policy.json
+/config/accounts/laozhou/
+/.agents/skills/health-supplement-selling/
+/docs/content/
+/docs/accounts/
+/docs/maintenance/controlled-phrase-current.md
+/docs/maintenance/health-script-chain-20261014.md
+/docs/runbooks/controlled-assembly-v1.md
+/docs/runbooks/open-middle-polish-v1.md
+/docs/runbooks/polish-repair-v1.md
+/docs/superpowers/specs/2026-10-14-health-expression-library-design.md
+/docs/superpowers/plans/2026-10-14-health-script-execution.md
+/archive/housekeeping-20261013/originals/docs/accounts/
+/scripts/validation/run-controlled-script.py
+/tests/test_controlled_assembly.py
+/tests/test_open_middle_polish.py
+/tests/test_polish_repair_loop.py
+/tests/test_selling_script_facts.py
+/tests/test_clef_script_gate.py
+/tests/test_beat_planner.py
+/tests/test_script_draft_api.py
+/tests/test_script_draft_ui.py
+
+# Picture, video and audio stay on the local machine
+*.mp4
+*.mov
+*.mkv
+*.avi
+*.webm
+*.wav
+*.mp3
+*.flac
+*.aac
+*.m4a
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif
+*.bmp

@@ -1,0 +1,184 @@
+[
+  {
+    "source": "scripts/check-ark-text-agent-script.py",
+    "destination": "scripts/validation/check-ark-text-agent-script.py",
+    "sha256_before": "DF4BB2F05A2732121D747A33F8B4CC309101CC6B1FC2310DACF64C56D3D345C8",
+    "sha256_after": "462DF04697E4CFE8E24121D243FAC013B01EF5091009E48603DA34952E241137",
+    "content_modified": true
+  },
+  {
+    "source": "scripts/inspect-cosy-graph.py",
+    "destination": "scripts/validation/inspect-cosy-graph.py",
+    "sha256_before": "E15D063529674A073A3C35A741FFB088F489C2B620B0599A537954B6B9C0F972",
+    "sha256_after": "E15D063529674A073A3C35A741FFB088F489C2B620B0599A537954B6B9C0F972",
+    "content_modified": false
+  },
+  {
+    "source": "scripts/inspect-torch-bridge.py",
+    "destination": "scripts/validation/inspect-torch-bridge.py",
+    "sha256_before": "6780D28180FEB059AB525BC3E4EA3DB6226280B8FE7EBB3FE46F455C88689EE8",
+    "sha256_after": "1FFE38C8F58549D8561224A7460554BF5E514A4DB1B7AFC9F65893CFDB175C89",
+    "content_modified": true
+  },
+  {
+    "source": "scripts/qualify-ark-text-agent.py",
+    "destination": "scripts/validation/qualify-ark-text-agent.py",
+    "sha256_before": "7637EF4CDB4FBA4F40FE637EDA8ACEB6FEFC25E6C27CF11A42D1C94987ACE779",
+    "sha256_after": "45A20F7C5C5A7897C297FF02F90D1C6ED627B67FA7B971634A0D93C64C481665",
+    "content_modified": true
+  },
+  {
+    "source": "scripts/qualify-ark.py",
+    "destination": "scripts/validation/qualify-ark.py",
+    "sha256_before": "E6D2F5F0D4E0D7E1D01012B75EFD6E47881582F616F84A199774132C99B7DD04",
+    "sha256_after": "D7DD5953CA7C7759623682F126059258A69C1404CE10587DF4B58F965C47AA1D",
+    "content_modified": true
+  },
+  {
+    "source": "scripts/qualify-fixtures.py",
+    "destination": "scripts/validation/qualify-fixtures.py",
+    "sha256_before": "E84FBDBB1183527D546F5F2444131CBF6A79280C146058D07806429F07C96F9B",
+    "sha256_after": "7B0E0EEBD10A158FA096D94B155D240E24466DD97BC3F76375489DA55B69CE09",
+    "content_modified": true
+  },
+  {
+    "source": "scripts/qualify-torch-aux.py",
+    "destination": "scripts/validation/qualify-torch-aux.py",
+    "sha256_before": "5689F17156F4C61109F316ACDCE7ED8540082200EF5ADDAF2BA312E8BC4CEDF4",
+    "sha256_after": "694F37ACA83459B517A997D4E4239D6AC2D35E5E872B9E64457E25F3DB2C8E05",
+    "content_modified": true
+  },
+  {
+    "source": "scripts/qualify-vision.py",
+    "destination": "scripts/validation/qualify-vision.py",
+    "sha256_before": "4D0B61E0562DE34A30EE3905FCCEE1A45C11A8898810FECD021D90ADC13952B1",
+    "sha256_after": "36A7FFAB3B448C698B2CFDA367D8146F72661888E70DAAB72DB955044E94C345",
+    "content_modified": true
+  },
+  {
+    "source": "scripts/qualify-voice.py",
+    "destination": "scripts/validation/qualify-voice.py",
+    "sha256_before": "E0B191C66EDB03EBD456794B4CC874432F07017A04D0B3E33532AD13CA4A9A8B",
+    "sha256_after": "FC602AC9D0F59FBC5486C6F8D754EEBBF3E309686F7BDFFDABA11F7C012A1E5D",
+    "content_modified": true
+  },
+  {
+    "source": "scripts/run-real-fixtures.py",
+    "destination": "scripts/validation/run-real-fixtures.py",
+    "sha256_before": "AECB609FDB3F1183AE53B8BDC945515FFE92939DE3DE183F83C5FDDD98B04FF0",
+    "sha256_after": "31D3C7BB656B18F548C6EEFB6F3325F6790D1FA86A2CF8F870F8E8293013868A",
+    "content_modified": true
+  },
+  {
+    "source": "scripts/test-live-incremental.py",
+    "destination": "scripts/validation/test-live-incremental.py",
+    "sha256_before": "C642F08F141D8B2D63CF1DFF514E014A50A0AE2B3B7F02F13C84E4A9A4643960",
+    "sha256_after": "24A978952C956804B599A76D5C47A1DDB8F1D8B6C6A124548050BDDAB65F7576",
+    "content_modified": true
+  },
+  {
+    "source": "scripts/library-job.py",
+    "destination": "scripts/jobs/library-job.py",
+    "sha256_before": "894C56D1722228B3E58CC401EFB651372AE1FEF97D67BA9472F65BD3097B3D55",
+    "sha256_after": "CDB3BF9B97AD3BD875DE2C46CFD2EA7ED3EED1E7EF11835780E779E9814D0FB9",
+    "content_modified": true
+  },
+  {
+    "source": "scripts/repair-live-shot.py",
+    "destination": "scripts/jobs/repair-live-shot.py",
+    "sha256_before": "668E5E6597A553C924D7CE4F31744F384B9F0B76CF239A635F322DD39665192C",
+    "sha256_after": "07663C32E1B5F040ED4E11743911EBAA0A49DAB65336FCFCDC559D3A24B28482",
+    "content_modified": true
+  },
+  {
+    "source": "scripts/_build_ark_jobs.py",
+    "destination": "scripts/diagnostics/_build_ark_jobs.py",
+    "sha256_before": "128B66DFC484FF1A73A45C328097CD250C6D0A49748BE93F94A6904B7777CCC8",
+    "sha256_after": "128B66DFC484FF1A73A45C328097CD250C6D0A49748BE93F94A6904B7777CCC8",
+    "content_modified": false
+  },
+  {
+    "source": "scripts/_cap.py",
+    "destination": "scripts/diagnostics/_cap.py",
+    "sha256_before": "E3146EF9EDEE9AE483934B346632D915313AE17BAFE453EE7A1936224C692690",
+    "sha256_after": "E3146EF9EDEE9AE483934B346632D915313AE17BAFE453EE7A1936224C692690",
+    "content_modified": false
+  },
+  {
+    "source": "scripts/_check_skill_load.py",
+    "destination": "scripts/diagnostics/_check_skill_load.py",
+    "sha256_before": "682CFFCFEF3ED5F020866BAE908A7A5167F143F2D31ED3E2C4A9E8EFD77DB48F",
+    "sha256_after": "682CFFCFEF3ED5F020866BAE908A7A5167F143F2D31ED3E2C4A9E8EFD77DB48F",
+    "content_modified": false
+  },
+  {
+    "source": "scripts/_clean_job.py",
+    "destination": "scripts/diagnostics/_clean_job.py",
+    "sha256_before": "652C21E3E423234570B9ECE488E50CFA16D3C8E3992E4019ACE2B8E44D6093F6",
+    "sha256_after": "652C21E3E423234570B9ECE488E50CFA16D3C8E3992E4019ACE2B8E44D6093F6",
+    "content_modified": false
+  },
+  {
+    "source": "scripts/_fail.py",
+    "destination": "scripts/diagnostics/_fail.py",
+    "sha256_before": "B2BEE8EA679E0F3B8B8CCDEDA65A038482CBEC31687E4CC9033B8E60E62B687A",
+    "sha256_after": "B2BEE8EA679E0F3B8B8CCDEDA65A038482CBEC31687E4CC9033B8E60E62B687A",
+    "content_modified": false
+  },
+  {
+    "source": "scripts/_ledger.py",
+    "destination": "scripts/diagnostics/_ledger.py",
+    "sha256_before": "1900854D2154B08D4FD370ED1AE3601169FEBD219FCDD3237D5E40C9D0C0800D",
+    "sha256_after": "1900854D2154B08D4FD370ED1AE3601169FEBD219FCDD3237D5E40C9D0C0800D",
+    "content_modified": false
+  },
+  {
+    "source": "scripts/_peek_01i.py",
+    "destination": "scripts/diagnostics/_peek_01i.py",
+    "sha256_before": "EFBE48ABF27F1D61C4C85F27CCF0DCBEF79BC442AEE0891636F1062F2B70F69E",
+    "sha256_after": "EFBE48ABF27F1D61C4C85F27CCF0DCBEF79BC442AEE0891636F1062F2B70F69E",
+    "content_modified": false
+  },
+  {
+    "source": "scripts/_probe_jobs.py",
+    "destination": "scripts/diagnostics/_probe_jobs.py",
+    "sha256_before": "CC6B654832C7F539BF74E26C42D3B2DCCB0B76161A9FC36E47E09716CE8DC97C",
+    "sha256_after": "CC6B654832C7F539BF74E26C42D3B2DCCB0B76161A9FC36E47E09716CE8DC97C",
+    "content_modified": false
+  },
+  {
+    "source": "scripts/_probe_provider.py",
+    "destination": "scripts/diagnostics/_probe_provider.py",
+    "sha256_before": "6B2F54C69572EA1BCAFD44C5E1A9C38D375E887A5135B0630E8D9D4178E8B396",
+    "sha256_after": "6B2F54C69572EA1BCAFD44C5E1A9C38D375E887A5135B0630E8D9D4178E8B396",
+    "content_modified": false
+  },
+  {
+    "source": "scripts/_repro.py",
+    "destination": "scripts/diagnostics/_repro.py",
+    "sha256_before": "1730C423D429A8EF75108E827D5F15B43B21B527970950A2939E086C197873A8",
+    "sha256_after": "1730C423D429A8EF75108E827D5F15B43B21B527970950A2939E086C197873A8",
+    "content_modified": false
+  },
+  {
+    "source": "scripts/_run_all_ark.py",
+    "destination": "scripts/diagnostics/_run_all_ark.py",
+    "sha256_before": "6B7E590851EFF30C2EFDCC46E3AFB11A1F8565ABA7B82C2313011E058CC7804B",
+    "sha256_after": "D6918C440CE51FAFC97FE1087FA2A78EF02A928043B57CACFE1CBD303D93D8D2",
+    "content_modified": true
+  },
+  {
+    "source": "scripts/_run_ark_job.py",
+    "destination": "scripts/diagnostics/_run_ark_job.py",
+    "sha256_before": "6E5CE4E2FD8ABEC809491B4B21AFB8BF97D3363279D92C53D30B0B720FF78A5D",
+    "sha256_after": "6E5CE4E2FD8ABEC809491B4B21AFB8BF97D3363279D92C53D30B0B720FF78A5D",
+    "content_modified": false
+  },
+  {
+    "source": "scripts/_status.py",
+    "destination": "scripts/diagnostics/_status.py",
+    "sha256_before": "06B3B54BC7DDD3D577E44CBFDB1211C423261125FE15AF02B5F8FB8A4963ABF3",
+    "sha256_after": "06B3B54BC7DDD3D577E44CBFDB1211C423261125FE15AF02B5F8FB8A4963ABF3",
+    "content_modified": false
+  }
+]

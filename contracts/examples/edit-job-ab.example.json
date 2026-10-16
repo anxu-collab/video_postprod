@@ -1,0 +1,88 @@
+{
+  "schema_version": "edit-job/v1",
+  "job_id": "demo-ab",
+  "revision": 1,
+  "parent_revision": null,
+  "account": "laoX",
+  "profile": "product_intro",
+  "intent": {
+    "brief": "合同演示，非真实产品任务。所有路径与hash为占位值，不可用于生成或验收。",
+    "language": "zh",
+    "target_duration_ticks": 480000,
+    "product_badge_requested": false
+  },
+  "product_documents": [],
+  "claims": [],
+  "assets": [
+    {
+      "asset_id": "a-source",
+      "path": "F:/codex/laox_account/video_postprod/tests/fixtures/demo-a.mp4",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+      "mode": "broll",
+      "provenance_ref": "F:/codex/laox_account/video_postprod/tests/fixtures/demo-a.provenance.json",
+      "locked": null
+    },
+    {
+      "asset_id": "b-source",
+      "path": "F:/codex/laox_account/video_postprod/tests/fixtures/demo-b.mp4",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000002",
+      "mode": "spoken_locked",
+      "provenance_ref": "F:/codex/laox_account/video_postprod/tests/fixtures/demo-b.provenance.json",
+      "locked": {
+        "transcript": "这是合同演示对白，不是实际录音。",
+        "audio_stream_index": 1,
+        "evidence_ref": "F:/codex/laox_account/video_postprod/tests/fixtures/demo-b.locked.json"
+      }
+    }
+  ],
+  "providers": {
+    "text": "text-configured",
+    "vision": "vision-configured",
+    "tts": "cosy-laox",
+    "asr": "mpt-cuda-small",
+    "lipsync": null
+  },
+  "templates": {
+    "subtitle": {
+      "template_id": "subtitle-bottom",
+      "version": "1.0.0"
+    },
+    "bgm": {
+      "template_id": "montauk-duck",
+      "version": "1.0.0"
+    },
+    "effects": [],
+    "sfx": [],
+    "product_badge": {
+      "enabled": false,
+      "template": null
+    }
+  },
+  "cost": {
+    "paid_enabled": false,
+    "currency": "CNY",
+    "job_limit_micros": 0,
+    "daily_limit_micros": 0,
+    "max_paid_requests": 0
+  },
+  "output": {
+    "width": 768,
+    "height": 1376,
+    "fps": 25,
+    "audio_sample_rate": 48000
+  },
+  "review_policy": {
+    "visual": "manual",
+    "lipsync": "manual",
+    "content": "evidence_required"
+  },
+  "changed_paths": [],
+  "overrides": {
+    "base_timeline_sha256": null,
+    "subtitle_edits": [],
+    "bgm_override": null,
+    "shot_edits": [],
+    "speech_edits": [],
+    "template_overrides": []
+  }
+}

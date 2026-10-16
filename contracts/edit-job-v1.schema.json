@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:laox:auto-postprod:edit-job-v1",
+  "title": "Immutable editing job revision v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "job_id", "revision", "parent_revision", "account", "profile", "intent", "product_documents", "claims", "assets", "providers", "templates", "overrides", "cost", "output", "review_policy", "changed_paths"],
+  "properties": {
+    "schema_version": {"const": "edit-job/v1"},
+    "job_id": {"$ref": "#/$defs/id"},
+    "revision": {"type": "integer", "minimum": 1},
+    "parent_revision": {"type": ["integer", "null"], "minimum": 1},
+    "account": {"const": "laoX"},
+    "profile": {"enum": ["warming", "selling", "product_intro"]},
+    "intent": {
+      "type": "object", "additionalProperties": false,
+      "required": ["brief", "language", "target_duration_ticks", "product_badge_requested"],
+      "properties": {
+        "brief": {"type": "string", "minLength": 1, "maxLength": 20000},
+        "language": {"const": "zh"},
+        "target_duration_ticks": {"type": "integer", "minimum": 1920, "multipleOf": 1920},
+        "product_badge_requested": {"type": "boolean", "default": false}
+      }
+    },
+    "product_documents": {
+      "type": "array", "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["document_id", "path", "sha256", "media_type"],
+        "properties": {
+          "document_id": {"$ref": "#/$defs/id"},
+          "path": {"$ref": "#/$defs/path"},
+          "sha256": {"$ref": "#/$defs/hash"},
+          "media_type": {"enum": ["text/plain", "text/markdown", "application/json", "application/pdf"]}
+        }
+      }
+    },
+    "claims": {
+      "type": "array", "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["claim_id", "document_id", "source_span", "text"],
+        "properties": {
+          "claim_id": {"$ref": "#/$defs/id"},
+          "document_id": {"$ref": "#/$defs/id"},
+          "source_span": {"type": "string", "minLength": 1, "maxLength": 1000},
+          "text": {"type": "string", "minLength": 1, "maxLength": 10000}
+        }
+      }
+    },
+    "assets": {
+      "type": "array", "minItems": 1, "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["asset_id", "path", "sha256", "mode", "provenance_ref", "locked"],
+        "properties": {
+          "asset_id": {"$ref": "#/$defs/id"},
+          "path": {"$ref": "#/$defs/path"},
+          "sha256": {"$ref": "#/$defs/hash"},
+          "mode": {"enum": ["broll", "spoken_locked", "avatar_redub"]},
+          "provenance_ref": {"$ref": "#/$defs/path"},
+          "locked": {
+            "oneOf": [
+              {"type": "null"},
+              {
+                "type": "object", "additionalProperties": false,
+                "required": ["transcript", "audio_stream_index", "evidence_ref"],
+                "properties": {
+                  "transcript": {"type": "string", "minLength": 1},
+                  "audio_stream_index": {"type": "integer", "minimum": 0},
+                  "evidence_ref": {"$ref": "#/$defs/path"}
+                }
+              }
+            ]
+          }
+        },
+        "allOf": [
+          {"if": {"properties": {"mode": {"const": "spoken_locked"}}, "required": ["mode"]}, "then": {"properties": {"locked": {"type": "object"}}}, "else": {"properties": {"locked": {"type": "null"}}}}
+        ]
+      }
+    },
+    "providers": {
+      "type": "object", "additionalProperties": false,
+      "required": ["text", "vision", "tts", "asr", "lipsync"],
+      "properties": {
+        "text": {"$ref": "#/$defs/id"}, "vision": {"$ref": "#/$defs/id"},
+        "tts": {"$ref": "#/$defs/id"}, "asr": {"$ref": "#/$defs/id"},
+        "lipsync": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/id"}]}
+      },
+      "description": "Route IDs resolve only through locked providers config; no secrets or arbitrary endpoint URLs."
+    },
+    "templates": {
+      "type": "object", "additionalProperties": false,
+      "required": ["subtitle", "bgm", "effects", "sfx", "product_badge"],
+      "properties": {
+        "subtitle": {"$ref": "#/$defs/template"},
+        "bgm": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/template"}]},
+        "effects": {"type": "array", "items": {"$ref": "#/$defs/template"}},
+        "sfx": {"type": "array", "items": {"$ref": "#/$defs/template"}},
+        "product_badge": {
+          "type": "object", "additionalProperties": false, "required": ["enabled", "template"],
+          "properties": {"enabled": {"type": "boolean", "default": false}, "template": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/template"}]}},
+          "allOf": [{"if": {"properties": {"enabled": {"const": true}}, "required": ["enabled"]}, "then": {"properties": {"template": {"type": "object"}}}, "else": {"properties": {"template": {"type": "null"}}}}]
+        }
+      }
+    },
+    "overrides": {
+      "type": "object", "additionalProperties": false,
+      "required": ["base_timeline_sha256", "subtitle_edits", "bgm_override", "shot_edits", "speech_edits", "template_overrides"],
+      "properties": {
+        "base_timeline_sha256": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/hash"}]},
+        "subtitle_edits": {"type": "array", "items": {
+          "type": "object", "additionalProperties": false, "required": ["cue_id", "text"],
+          "properties": {"cue_id": {"$ref": "#/$defs/id"}, "text": {"type": "string", "minLength": 1}, "start_tick": {"type": "integer", "minimum": 0}, "end_tick": {"type": "integer", "minimum": 1}},
+          "dependentRequired": {"start_tick": ["end_tick"], "end_tick": ["start_tick"]}
+        }},
+        "bgm_override": {"oneOf": [{"type": "null"}, {
+          "type": "object", "additionalProperties": false, "required": ["path", "sha256", "provenance_ref", "gain_db"],
+          "properties": {"path": {"$ref": "#/$defs/path"}, "sha256": {"$ref": "#/$defs/hash"}, "provenance_ref": {"$ref": "#/$defs/path"}, "gain_db": {"type": "number", "minimum": -96, "maximum": 0}}
+        }]},
+        "shot_edits": {"type": "array", "items": {
+          "type": "object", "additionalProperties": false, "required": ["clip_id", "asset_id", "source_in_tick", "source_out_tick", "preserve_narration"],
+          "properties": {"clip_id": {"$ref": "#/$defs/id"}, "asset_id": {"$ref": "#/$defs/id"}, "source_in_tick": {"type": "integer", "minimum": 0}, "source_out_tick": {"type": "integer", "minimum": 1}, "preserve_narration": {"type": "boolean"}}
+        }},
+        "speech_edits": {"type": "array", "items": {
+          "type": "object", "additionalProperties": false, "required": ["event_id", "text"],
+          "properties": {"event_id": {"$ref": "#/$defs/id"}, "text": {"type": "string", "minLength": 1}}
+        }},
+        "template_overrides": {"type": "array", "items": {
+          "type": "object", "additionalProperties": false, "required": ["template", "params"],
+          "properties": {"template": {"$ref": "#/$defs/template"}, "params": {"type": "object", "maxProperties": 32, "description": "Must validate against template parameter schema and user overlay policy."}}
+        }}
+      },
+      "description": "Explicit edit payload. changed_paths is only a hint. Cue/clip/speech IDs resolve against the immutable base timeline and require a non-null base hash."
+    },
+    "cost": {
+      "type": "object", "additionalProperties": false,
+      "required": ["paid_enabled", "currency", "job_limit_micros", "daily_limit_micros", "max_paid_requests"],
+      "properties": {
+        "paid_enabled": {"type": "boolean", "default": false},
+        "currency": {"const": "CNY"},
+        "job_limit_micros": {"type": "integer", "minimum": 0},
+        "daily_limit_micros": {"type": "integer", "minimum": 0},
+        "max_paid_requests": {"type": "integer", "minimum": 0}
+      },
+      "allOf": [{"if": {"properties": {"paid_enabled": {"const": true}}, "required": ["paid_enabled"]}, "then": {"properties": {"job_limit_micros": {"minimum": 1}, "daily_limit_micros": {"minimum": 1}, "max_paid_requests": {"minimum": 1}}}}]
+    },
+    "output": {
+      "type": "object", "additionalProperties": false,
+      "required": ["width", "height", "fps", "audio_sample_rate"],
+      "properties": {"width": {"const": 768}, "height": {"const": 1376}, "fps": {"const": 25}, "audio_sample_rate": {"const": 48000}}
+    },
+    "review_policy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["visual", "lipsync", "content"],
+      "properties": {"visual": {"const": "manual"}, "lipsync": {"const": "manual"}, "content": {"const": "evidence_required"}}
+    },
+    "changed_paths": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^/", "maxLength": 500}}
+  },
+  "allOf": [
+    {"if": {"properties": {"revision": {"const": 1}}, "required": ["revision"]}, "then": {"properties": {"parent_revision": {"type": "null"}}}, "else": {"properties": {"parent_revision": {"type": "integer"}}}},
+    {"if": {"properties": {"intent": {"properties": {"product_badge_requested": {"const": false}}, "required": ["product_badge_requested"]}}, "required": ["intent"]}, "then": {"properties": {"templates": {"properties": {"product_badge": {"properties": {"enabled": {"const": false}}}}}}}}
+  ],
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"},
+    "hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "path": {"type": "string", "minLength": 1, "maxLength": 4096, "description": "Runtime validates absolute/local allowlisted paths, realpath and SHA256; schema alone does not grant filesystem access."},
+    "template": {"type": "object", "additionalProperties": false, "required": ["template_id", "version"], "properties": {"template_id": {"$ref": "#/$defs/id"}, "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"}}}
+  }
+}
