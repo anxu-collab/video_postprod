@@ -85,6 +85,7 @@
 | 脚本 | `scripts/` | 安装、启动、停止和验证。索引见 [scripts/README.md](scripts/README.md) |
 | 测试 | `tests/` | 回归测试 |
 | 技能与文档 | `.agents/`、`docs/` | 可选用的写稿技能和操作说明 |
+| 提交记录 | `submissions/` | 允许修改的范围，以及提交前要写的记录 |
 
 文本模型分档在 [config/ark-text-agent.json](config/ark-text-agent.json)。整稿生成和审片使用不同档。画面描述与文本调用共用任务额度，由网关按请求入账；同一闸门后的重跑不重复计费。选镜先由本机 Clef 排序，再做文字审片。配音和字幕识别在本机进行，只在实际推理时加载，结束后退出。
 
@@ -134,4 +135,6 @@ scripts/start.ps1 -OpenUI
 
 ## 提交改动
 
-可以直接查看和克隆。改动通过拉取请求提交，由维护者审阅后合并。没有写入权限时不能直接推送到本仓库。
+可以直接查看和克隆。允许修改的源码、合同、测试和说明，通过拉取请求提交，由维护者审阅后合并。没有写入权限时不能直接推送到本仓库。
+
+提交前先按 [submissions/README.md](submissions/README.md) 写好记录，再把记录和改动放进同一次请求。记录模板是 [submissions/record-template.md](submissions/record-template.md)。
